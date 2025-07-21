@@ -11,6 +11,18 @@ services:
       - web
     env_file:
       - .env
+    labels:
+    - traefik.enable=true
+  # Route all main traffic to this service (React app, static files, etc.)
+    - traefik.http.routers.triffnix.rule=Host(`triffnix.com`)
+    - traefik.http.routers.triffnix.entrypoints=web
+    - traefik.http.services.triffnix.loadbalancer.server.port=3000
+
+   # Route API traffic to backend (adjust PathPrefix if you separate API/frontend)
+    - traefik.http.routers.triffnix-api.rule=Host(`triffnix.com`) && PathPrefix(`/api`)
+    - traefik.http.routers.triffnix-api.entrypoints=web
+    - traefik.http.services.triffnix-api.loadbalancer.server.port=3000
+
   postgres:
     image: postgres:16
     restart: unless-stopped
