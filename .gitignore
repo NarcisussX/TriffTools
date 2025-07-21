@@ -11,6 +11,7 @@ frontend/dist/
 frontend/build/
 backend/dist/
 backend/build/
+sde/
 
 # System files
 .DS_Store
