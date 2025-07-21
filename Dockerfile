@@ -1,7 +1,7 @@
 FROM node:20-alpine AS builder-stage
 
-WORKDIR /app
-COPY ./sde /app/sde
+# WORKDIR /app
+# COPY ./sde /app/sde
 # FRONTEND
 COPY frontend/package*.json ./frontend/
 WORKDIR /app/frontend
