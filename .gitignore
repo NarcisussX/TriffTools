@@ -12,6 +12,7 @@ frontend/build/
 backend/dist/
 backend/build/
 sde/
+market-arbitrage/sqlite-latest.sqlite
 
 # System files
 .DS_Store
