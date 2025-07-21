@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  triffnix:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    networks:
+      - web
+    env_file:
+      - .env
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: triffnix
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - web
+  market-arbitrage:
+    build: ./market-arbitrage
+    environment:
+      - DATABASE_URL=postgres://user:pass@postgres:5432/triffnix
+      - PORT=3002
+    depends_on:
+      - postgres
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.market-arbitrage.rule=PathPrefix(`/api/market`)
+      - traefik.http.routers.market-arbitrage.entrypoints=web
+      - traefik.http.services.market-arbitrage.loadbalancer.server.port=3002
+    networks:
+      - web
+  traefik:
+    image: traefik:v2.11
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=admin@triffnix.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+
+volumes:
+  postgres-data:
