@@ -13,8 +13,10 @@ services:
       - .env
     labels:
     - traefik.enable=true
-    - traefik.http.routers.triffnix.rule=Host(`triffnix.com`)
-    - traefik.http.routers.triffnix.entrypoints=web
+    - traefik.http.routers.triffnix.rule=Host(`triffnix.com`, `www.triffnix.com`)
+    - traefik.http.routers.triffnix.entrypoints=web,websecure
+    - traefik.http.routers.triffnix.tls=true
+    - traefik.http.routers.triffnix.tls.certresolver=myresolver
     - traefik.http.services.triffnix.loadbalancer.server.port=3000
 
   postgres:
