@@ -91,10 +91,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   return (
     <>
-    <div className="relative min-h-screen bg-[#1e1f29] text-gray-100 font-mono overflow-hidden">
-      <div className="absolute inset-0 z-0 animate-starfield pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 to-transparent z-10" />
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-blue-400/20 to-transparent z-10" />
+    <div className="font-mono">
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
   This tool calculates a fair (share based) ISK split for C5 and C6 wormhole sites based on how many ships each player brought — including tiered share system for multiboxed marauders, dreads, and tackle. Just enter the number of sites and ships used, and it handles the math for you. Upgraded Avenger and big drifter loot are automatically included if a dread is in fleet composition.
@@ -273,6 +270,39 @@ const handleSubmit = async (e: React.FormEvent) => {
         )}
       </div>
     </div>
+    <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
+  <p className="text-white font-semibold">
+           Share Allocation for Marauders:
+          </p>
+
+          <ul className="list-disc list-inside">
+            <li>
+              <span>First Marauder (for that player)</span> +1.5
+            </li>
+            <li>
+              <span>Second Marauder multiboxed:</span> +1.0
+            </li>
+            <li>
+              <span>Every Marauder for that player after:</span> +0.5
+            </li>
+          </ul>
+          <p className="text-white font-semibold">
+           Share Allocation for Dreads:
+          </p>
+
+          <ul className="list-disc list-inside">
+            <li>
+              <span>First Dread (for that player):</span> +2.5
+            </li>
+            <li>
+              <span>Every Dread for that player after:</span> +1.5
+            </li>
+          </ul>
+          <p/>
+          <p className="text-white font-semibold">
+           Running the tackle frigate earns +0.5 shares.
+          </p>
+</div>
     </div>
     </>
   );

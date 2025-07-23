@@ -43,6 +43,41 @@ const fileMap = [
   { path: "c6_datarelic_sites_clean.json", class: "C6", type: "Mixed" },
 ];
 
+const avengerWaveC5 = {
+  wave: "Upgraded Avengers",
+  ships: [
+    {
+      qty: 3,
+      name: "Upgraded Avenger",
+      dps: 1210,
+      alpha: 0,
+      ehp: 1400000,
+      sig: 30000,
+      orbit_velocity: "300 m/s",
+      distance: "20km",
+      special: { Scram: 15, Neut: 75, Web: 1, },
+    },
+  ],
+};
+
+const avengerWaveC6 = {
+  wave: "Upgraded Avengers",
+  ships: [
+    {
+      qty: 4,
+      name: "Upgraded Avenger",
+      dps: 1210,
+      alpha: 0,
+      ehp: 1400000,
+      sig: 30000,
+      orbit_velocity: "300 m/s",
+      distance: "20km",
+      special: { Scram: 15, Neut: 75, Web: 1, },
+    },
+  ],
+};
+
+
 export default function WormholeSites() {
   const [sites, setSites] = useState<Site[]>([]);
   const [search, setSearch] = useState("");
@@ -86,11 +121,7 @@ export default function WormholeSites() {
   });
 
 return (
-    <div className="relative min-h-screen bg-[#1e1f29] text-gray-100 font-mono overflow-hidden">
-    <div className="absolute inset-0 z-0 animate-starfield pointer-events-none" />
-    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 to-transparent z-10" />
-    <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-blue-400/20 to-transparent z-10" />
-    
+    <div className="font-mono">
     <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
     <h1 className="text-3xl font-bold mb-4">Wormhole Sites</h1>
 
@@ -167,10 +198,15 @@ return (
 
     <div className="space-y-4">
 {filtered.map((site, i) => {
+  let preWave = [];
   let extraWaves = [];
   let extraLoot = 0;
 
   if (site.class === "C5" || site.class === "C6") {
+    if (showBigDrifter) {
+      preWave.push(site.class === "C5" ? avengerWaveC5 : avengerWaveC6);
+      extraLoot += site.class === "C5" ? 105000000 : 140000000;
+    }
     if (site.type === "Combat") {
       if (showMiniDrifter) {
         extraWaves.push({
@@ -184,7 +220,7 @@ return (
               ehp: 1175000,
               sig: 25000,
               orbit_velocity: "400 m/s",
-              distance: "20km",
+              distance: "13km",
               special: { Scram: 20, Neut: 100, Web: 1, },
             },
           ],
@@ -204,7 +240,7 @@ return (
               ehp: 2350000,
               sig: 25000,
               orbit_velocity: "400 m/s",
-              distance: "20km",
+              distance: "13km",
               special: { Scram: 20, Neut: 200, Web: 1, },
             },
           ],
@@ -216,7 +252,7 @@ return (
 
   const adjustedSite = {
     ...site,
-    waves: [...site.waves, ...extraWaves],
+    waves: [...preWave, ...site.waves, ...extraWaves],
     blue_loot_isk: site.blue_loot_isk
       ? site.blue_loot_isk + extraLoot
       : extraLoot,

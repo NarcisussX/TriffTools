@@ -6,15 +6,15 @@ const router = express.Router();
 
 const modules = {
   // Scoops
-  "Gas Cloud Scoop I": { type: "Scoop", baseAmount: 10, cycle: 30 },
-  "Crop' Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 40 },
-  "Plow' Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 40 },
-  "Gas Cloud Scoop II": { type: "Scoop", baseAmount: 20, cycle: 40 },
-  "Syndicate Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 30 },
+  "Gas Cloud Scoop I": { type: "Scoop", baseAmount: 10, cycle: 30, residueChance: 0, residueMultiplier: 0 },
+  "Crop' Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 40, residueChance: 1.0, residueMultiplier: 2 },
+  "Plow' Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 40, residueChance: 1.0, residueMultiplier: 4 },
+  "Gas Cloud Scoop II": { type: "Scoop", baseAmount: 20, cycle: 40, residueChance: .34, residueMultiplier: 1 },
+  "Syndicate Gas Cloud Scoop": { type: "Scoop", baseAmount: 20, cycle: 30, residueChance: 0, residueMultiplier: 0 },
   // Harvesters
-  "Gas Cloud Harvester I": { type: "Harvester", baseAmount: 100, cycle: 200 },
-  "Gas Cloud Harvester II": { type: "Harvester", baseAmount: 200, cycle: 160 },
-  "ORE Gas Cloud Harvester": { type: "Harvester", baseAmount: 200, cycle: 160 }
+  "Gas Cloud Harvester I": { type: "Harvester", baseAmount: 100, cycle: 200, residueChance: 0, residueMultiplier: 0 },
+  "Gas Cloud Harvester II": { type: "Harvester", baseAmount: 200, cycle: 160, residueChance: .34, residueMultiplier: 1 },
+  "ORE Gas Cloud Harvester": { type: "Harvester", baseAmount: 200, cycle: 160, residueChance: 0, residueMultiplier: 0 }
 };
 
 const shipProfiles = {
@@ -123,11 +123,7 @@ router.post("/api/gas-calc", async (req, res) => {
       boostShip, miningDirector, industrialCommand,
       boostImplant, boostModule, bastion
     } = req.body;
-
-    console.log("🧠 Boosting inputs:", { boostShip, miningDirector, industrialCommand, boostImplant, boostModule, bastion });
-
     const boostInfo = `${boostShip}, ${miningDirector}, ${industrialCommand}, ${boostImplant}, ${boostModule}, ${bastion}`;
-    console.log("🛠️ Calculating with boostInfo:", boostInfo);
 
     const mod = modules[moduleType];
     const profile = shipProfiles[ship];
@@ -152,6 +148,12 @@ router.post("/api/gas-calc", async (req, res) => {
 
     const results = [];
 
+    const { residueChance = 0, residueMultiplier = 0 } = mod;
+    const wasteFactor = residueChance * residueMultiplier;         // e.g. 0.34 * 1 = 0.34
+    const depletionFactor = 1 + wasteFactor;                       // how fast the cloud disappears
+    const recoverFrac = 1 / depletionFactor;                       // fraction of cloud you actually loot
+    const wasteFrac = 1 - recoverFrac;                             // == wasteFactor / (1 + wasteFactor)
+
     for (const site of gasSites) {
       const siteName = site.site;
 
@@ -160,26 +162,40 @@ router.post("/api/gas-calc", async (req, res) => {
         const m3PerUnit = gas.m3_per_unit;
         const unitsPerCloud = gas.units_per_cloud;
 
+        // ---- hourly income (residue does NOT increase what you gather per cycle) ----
         const unitsPerHour = totalM3PerHour / m3PerUnit;
         const price = await getISKPerUnit(gasName);
         const iskPerHour = unitsPerHour * price;
-        const m3PerCloud = gas.units_per_cloud * gas.m3_per_unit;
-        const totalUnits = gas.units_per_cloud;
+
+        // ---- cloud stats ----
+        const m3PerCloud = unitsPerCloud * m3PerUnit;
+        const totalUnits = unitsPerCloud;
+
+        // ---- expected *gathered* vs *wasted* from full cloud ----
+        const gatheredUnits = totalUnits * recoverFrac;
+        const wastedUnits   = totalUnits * wasteFrac;
+        const gatheredM3    = m3PerCloud * recoverFrac;
+        const wastedM3      = m3PerCloud * wasteFrac;
+        const iskPerCloud   = gatheredUnits * price;
+        const iskLostResidue= wastedUnits * price;
+
+        // ---- TTK (accounting for residue increasing cloud depletion) ----
+        // base (non-waste) removal per cycle in units:
         const adjustedUnitsPerModule = adjustedYield / m3PerUnit;
-        const unitsPerCycle = moduleCount * shipCount * adjustedUnitsPerModule;
-        const cyclesNeeded = totalUnits / unitsPerCycle;
+        const baseUnitsPerCycle = moduleCount * shipCount * adjustedUnitsPerModule;
+        const effectiveUnitsPerCycle = baseUnitsPerCycle * depletionFactor; // base + expected waste
+        const cyclesNeeded = totalUnits / effectiveUnitsPerCycle;
         const totalSeconds = cyclesNeeded * adjustedCycleTime;
         const totalMinutes = Math.ceil(totalSeconds / 60);
 
-        let minutesToHuffFormatted;
+        let ttkFormatted;
         if (totalMinutes >= 60) {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            minutesToHuffFormatted = `${hours}h ${minutes}m`;
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          ttkFormatted = `${hours}h ${minutes}m`;
         } else {
-            minutesToHuffFormatted = `${totalMinutes}m`;
+          ttkFormatted = `${totalMinutes}m`;
         }
-        
 
         results.push({
           site: siteName,
@@ -190,8 +206,13 @@ router.post("/api/gas-calc", async (req, res) => {
           price,
           unitsPerHour,
           iskPerHour,
-          minutesToHuff: minutesToHuffFormatted,
-          totalIskPerCloud: unitsPerCloud * price,
+          minutesToHuff: ttkFormatted,    // backward compat
+          totalIskPerCloud: unitsPerCloud * price, // legacy "raw" cloud value (no waste)
+          m3PerCloud: gatheredM3,
+          m3LostResidue: wastedM3,
+          iskPerCloud,
+          iskLostResidue,
+          ttk: ttkFormatted,
         });
       }
     }

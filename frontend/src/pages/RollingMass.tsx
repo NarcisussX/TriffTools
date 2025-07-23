@@ -170,10 +170,7 @@ export default function RollingMass() {
   };
 
   return (
-        <div className="relative min-h-screen bg-[#1e1f29] text-gray-100 font-mono overflow-hidden">
-      <div className="absolute inset-0 z-0 animate-starfield pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 to-transparent z-10" />
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-blue-400/20 to-transparent z-10" />
+        <div className="font-mono">
     <div className="w-full flex flex-col items-center pt-8 px-2">
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
@@ -182,7 +179,7 @@ export default function RollingMass() {
     <br /><br />
     Use this chart to find your wormhole’s type, check the total mass allowance, and plan your jumps—minimizing risk and maximizing control. The breakdown for 1000Gg, 2000Gg, 3000Gg, and 3300Gg holes covers the required number of jumps, “hot” vs “cold” (prop mod on vs off), and steps to crit for hole control. Each section shows the recommended jump sequence and whether a heavy interdictor (HIC) is needed for perfect mass management.
     <br /><br />
-    For outlier cases, if the hole has had significant mass through it but is not reduced, do cold-hots until it reduces then follow the instructions from the "YES" category. For all holes aside from 1000Gg mass holes, if the hole is already reduced just do cold-hots until it crits then HIC once (or twice).
+    For outlier cases, if the hole has had significant mass through it but is not reduced or if the hole is already reduced with unkown mass through it, just do cold-hots until it crits then HIC once (or twice). Reduced 1000Gg holes are best rolled using HICs, as it wont crit until it hits 100,000 mass remaining, and a cold jump may close it before showing crit. 
   </span>
         </div>
         </div>

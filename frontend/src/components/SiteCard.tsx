@@ -46,7 +46,8 @@ function getPeakStats(waves: Wave[]) {
     // Skip Drifter-injected waves
     if (
       wave.wave === "Drifter Recon Battleship" ||
-      wave.wave === "Drifter Response Battleship"
+      wave.wave === "Drifter Response Battleship" ||
+      wave.wave === "Upgraded Avengers"
     ) {
       continue;
     }

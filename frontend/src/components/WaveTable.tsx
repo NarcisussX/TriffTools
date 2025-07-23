@@ -38,6 +38,9 @@ export const shipNameToClassMap: Record<string, "frigate" | "cruiser" | "battles
   "Sleepless Warden": "battleship",
   "Sleepless Guardian": "battleship",
   "Sleepless Outguard": "battleship",
+  "Drifter Recon Battleship": "battleship",
+  "Drifter Response Battleship": "battleship",
+  "Upgraded Avenger": "battleship",
 
   // Sentinels
   "Emergent Sentinel": "frigate",
@@ -158,7 +161,7 @@ export default function WaveTable({ ships }: { ships: Ship[] }) {
 
         {/* DTA badge */}
         {ship.dta && (
-          <span className="ml-1 text-xs bg-purple-600 text-white px-1 rounded">DTA</span>
+          <span className="ml-1 text-xs bg-purple-600 text-white px-1 rounded">DTR</span>
         )}
       </>
     );

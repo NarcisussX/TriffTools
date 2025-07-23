@@ -7,7 +7,11 @@ import PiCalc from "./pages/piCalc";
 import RollingMass from "./pages/RollingMass";
 import WormholeSites from "./pages/WormholeSites";
 import Acknowledgements from "./pages/acknowledgements";
-import { Menu, X } from "lucide-react"; // Lucide icons (already available)
+import { Menu, X } from "lucide-react";
+import Changelog from "./pages/changelog";
+import Roadmap from "./pages/roadmap";
+import { Settings } from "lucide-react";
+import { useBg } from "./BgContext"; 
 
 const navItems = [
   { to: "/gas-calc", label: "Gas Calculator" },
@@ -21,17 +25,45 @@ const navItems = [
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { animated, setAnimated } = useBg();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <div className="relative-min-h-screen bg-primary text-white font-sans">
+    <div className="relative-min-h-screen text-white font-sans">
       <header className="bg-accent shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <Link
-            to="/"
-            className="text-2xl font-bold tracking-wide text-white hover:text-highlight transition-colors"
-          >
-            Triff.Tools
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="text-2xl font-bold tracking-wide text-white hover:text-highlight transition-colors"
+            >
+              Triff.Tools
+            </Link>
+            {/* Settings icon */}
+            <div className="relative">
+              <button
+                className="ml-0 mt-[3px] p-1 rounded-full hover:bg-accent/70 focus:outline-none"
+                onClick={() => setShowDropdown((d) => !d)}
+                aria-label="Open settings"
+              >
+                <Settings size={20} />
+              </button>
+              {/* Dropdown */}
+              {showDropdown && (
+                <div className="absolute left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg min-w-[180px] z-50 p-2">
+                  <button
+                    className="block w-full text-left px-2 py-1 rounded hover:bg-accent"
+                    onClick={() => {
+                      setAnimated((a) => !a);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {animated ? "Switch to Static BG" : "Switch to Animated BG"}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
           <button
             className="md:hidden text-white"
             onClick={() => setIsOpen(!isOpen)}
@@ -82,6 +114,8 @@ export default function App() {
           <Route path="/rolling-mass" element={<RollingMass />} />
           <Route path="/wormhole-sites" element={<WormholeSites />} />
           <Route path="/acknowledgements" element={<Acknowledgements />} />
+          <Route path="/changelog" element={<Changelog />} />
+          <Route path="/roadmap" element={<Roadmap />} />
         </Routes>
       </main>
     </div>

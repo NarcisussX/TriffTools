@@ -36,6 +36,74 @@ const boostModules = [
   { label: "Burst II", value: "T2" }
 ];
 
+type InfoHeadProps = {
+  children: React.ReactNode;  // header label contents (e.g., "M³ Lost")
+  tip: string;                // tooltip text
+  id: string;                 // unique id per header
+  className?: string;
+};
+
+
+function InfoHead({
+  children,
+  tip,
+  className = "",
+  id,
+}: {
+  children: React.ReactNode;
+  tip: string;
+  className?: string;
+  id: string;
+}) {
+  return (
+    <th
+      scope="col"
+      className={`border px-3 py-2 relative overflow-visible whitespace-nowrap ${className}`}
+    >
+      <span
+        className="group/ih inline-flex items-center gap-1 cursor-help"
+        aria-describedby={id}
+      >
+        {children}
+        <span
+  aria-hidden="true"
+  className="
+    inline-flex items-center justify-center
+    w-4 h-4 sm:w-5 sm:h-5
+    rounded-full
+    border border-blue-400/40
+    bg-blue-500/20
+    text-[10px] sm:text-[11px] font-bold leading-none
+    text-blue-200
+    group-hover/ih:bg-blue-500/30 group-hover/ih:text-blue-100
+    group-focus-within/ih:bg-blue-500/30 group-focus-within/ih:text-blue-100
+    transition-colors duration-150
+    translate-y-[1px]  /* nudge down to optical center */
+  "
+>
+  ?
+</span>
+
+
+        {/* Tooltip BELOW the icon */}
+        <div
+          id={id}
+          role="tooltip"
+          className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 hidden
+                     group-hover/ih:block group-focus-within/ih:block
+                     w-44 sm:w-56 max-w-xs px-2 py-1 rounded border border-gray-700 shadow-lg
+                     bg-gray-900 text-[11px] leading-snug text-gray-100
+                     whitespace-normal break-words pointer-events-none select-none"
+        >
+          {tip}
+        </div>
+      </span>
+    </th>
+  );
+}
+
+
+
 export default function GasCalc() {
 const [form, setForm] = useState({
   ship: "Prospect",
@@ -106,10 +174,7 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <div className="relative min-h-screen bg-[#1e1f29] text-gray-100 font-mono overflow-hidden">
-      <div className="absolute inset-0 z-0 animate-starfield pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 to-transparent z-10" />
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-blue-400/20 to-transparent z-10" />
+    <div className="font-mono">
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
           <p className="mb-1">
@@ -294,23 +359,59 @@ const handleSubmit = async (e) => {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="boostImplant" className="mb-1 text-sm">
-                Boost Implant
-              </label>
-              <select
-                id="boostImplant"
-                name="boostImplant"
-                value={form.boostImplant}
-                onChange={handleChange}
-                className="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm"
-              >
-                {boostImplants.map((imp) => (
-                  <option key={imp.label} value={imp.value}>
-                    {imp.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+  <label
+    htmlFor="boostImplant"
+    className="mb-1 text-sm flex items-center gap-1"
+  >
+    Boost Implant
+    {/* tooltip */}
+    <span className="relative group cursor-help select-none">
+      <span
+        aria-hidden="true"
+        className="
+          inline-flex items-center justify-center
+          w-4 h-4 sm:w-5 sm:h-5
+          rounded-full
+          border border-blue-400/40
+          bg-blue-500/20
+          text-[10px] sm:text-[11px] font-bold leading-none
+          text-blue-200
+          group-hover:bg-blue-500/30 group-hover:text-blue-100
+          group-focus-within:bg-blue-500/30 group-focus-within:text-blue-100
+          transition-colors duration-150
+          translate-y-[1px]
+        "
+      >
+        ?
+      </span>
+      <span
+        role="tooltip"
+        className="
+          absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 hidden
+          group-hover:block group-focus-within:block
+          w-48 sm:w-56 max-w-xs px-2 py-1 rounded border border-gray-700 shadow-lg
+          bg-gray-900 text-[11px] leading-snug text-gray-100
+          whitespace-normal break-words pointer-events-none
+        "
+      >
+        Mining Foreman Mindlink and ORE Mining Director give the same mining
+        burst bonus. ORE also adds shield boosts (ignored here).
+      </span>
+    </span>
+  </label>
+
+  <select
+    id="boostImplant"
+    name="boostImplant"
+    value={form.boostImplant}
+    onChange={handleChange}
+    className="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm"
+  >
+    <option value="none">No</option>
+    <option value="mindlink">Yes</option>
+  </select>
+</div>
+
             <div className="flex flex-col">
               <label htmlFor="boostModule" className="mb-1 text-sm">
                 Boost Module
@@ -331,7 +432,7 @@ const handleSubmit = async (e) => {
             </div>
             <div className="flex flex-col">
               <label htmlFor="bastion" className="mb-1 text-sm">
-                Bastion
+                Industrial Core
               </label>
               <select
                 id="bastion"
@@ -363,55 +464,109 @@ const handleSubmit = async (e) => {
         {results.length > 0 && (
           <div className="overflow-x-auto">
             <table className="table-auto w-full text-sm border border-gray-700">
-              <thead className="bg-gray-900 text-white">
-                <tr>
-                  <th className="border px-3 py-2">Site</th>
-                  <th className="border px-3 py-2">Gas</th>
-                  <th className="border px-3 py-2">ISK/unit</th>
-                  <th className="border px-3 py-2">m³/unit</th>
-                  <th className="border px-3 py-2">m³/cloud</th>
-                  <th className="border px-3 py-2">TTK</th>
-                  <th className="border px-3 py-2">ISK/hr</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(() => {
-                    const rows = [];
-                    for (let i = 0; i < results.length; i += 2) {
-                        const r1 = results[i];
-                        const r2 = results[i + 1];
+<thead className="bg-gray-900 text-white">
+  <tr>
+    <th className="border px-3 py-2">Site</th>
+    <th className="border px-3 py-2">Gas</th>
+    <th className="border px-3 py-2">M³/Cloud</th>
+<InfoHead id="m3lost" tip="Expected m³ destroyed by residue (waste) instead of harvested. Based on module residue % × multiplier.">
+  M³ Lost
+</InfoHead>
+    <th className="border px-3 py-2">ISK/Cloud</th>
+<InfoHead id="isklost" tip="ISK value of expected residue (waste) destroyed instead of harvested.">
+  ISK Lost
+</InfoHead>
+    <th className="border px-3 py-2">TTK</th>
+    <th className="border px-3 py-2">ISK/hr</th>
+  </tr>
+</thead>
+<tbody>
+  {(() => {
+    const rows = [];
+    for (let i = 0; i < results.length; i += 2) {
+      const r1: any = results[i];
+      const r2: any = results[i + 1];
 
-                        rows.push(
-                            <tr key={i} className={Math.floor(i / 2) % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700'}>
-                                <td
-  className="border px-3 py-2 text-center align-middle"
-  rowSpan={2}
->
-  <div className="text-lg font-bold">{r1.site}</div>
-  <div className="text-xs text-gray-400 mt-1">
-  💰 {Math.round((r1.totalIskPerCloud + r2.totalIskPerCloud) / 1_000_000)}M ISK
-</div>
-</td>
+      // safe fallbacks
+      const ttk1 = r1.ttk ?? r1.minutesToHuff;
+      const ttk2 = r2.ttk ?? r2.minutesToHuff;
+
+      // residue-adjusted ISK totals for the site
+      const siteIskAdj =
+        (r1.iskPerCloud ?? 0) +
+        (r2?.iskPerCloud ?? 0);
+
+      rows.push(
+        <tr
+          key={i}
+          className={Math.floor(i / 2) % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+        >
+          <td
+            className="border px-3 py-2 text-center align-middle"
+            rowSpan={2}
+          >
+            <div className="text-lg font-bold">{r1.site}</div>
+            <div className="text-xs text-gray-400 mt-1">
+              💰 {Math.round(siteIskAdj / 1_000_000)}M ISK
+            </div>
+          </td>
+
+          {/* row 1 gas */}
           <td className="border px-3 py-2">{r1.gas}</td>
-          <td className="border px-3 py-2">{r1.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-          <td className="border px-3 py-2">{r1.m3_per_unit}</td>
-          <td className="border px-3 py-2">{r1.m3_per_cloud.toLocaleString()}</td>
-          <td className="border px-3 py-2 font-mono">{r1.minutesToHuff}</td>
-          <td className="border px-3 py-2">{r1.iskPerHour.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+          <td className="border px-3 py-2">{Math.round(r1.m3PerCloud ?? r1.m3_per_cloud).toLocaleString()}</td>
+          <td className="border px-3 py-2 text-red-300">
+            {Math.round(r1.m3LostResidue ?? 0).toLocaleString()}
+          </td>
+          <td className="border px-3 py-2">
+            {(r1.iskPerCloud ?? r1.totalIskPerCloud).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
+          <td className="border px-3 py-2 text-red-300">
+            {(r1.iskLostResidue ?? 0).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
+          <td className="border px-3 py-2 font-mono">{ttk1}</td>
+          <td className="border px-3 py-2">
+            {r1.iskPerHour.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
         </tr>,
-        <tr key={i + 1} className={Math.floor(i / 2) % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700'}>
+        <tr
+          key={i + 1}
+          className={Math.floor(i / 2) % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+        >
+          {/* row 2 gas */}
           <td className="border px-3 py-2">{r2.gas}</td>
-          <td className="border px-3 py-2">{r2.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-          <td className="border px-3 py-2">{r2.m3_per_unit}</td>
-          <td className="border px-3 py-2">{r2.m3_per_cloud.toLocaleString()}</td>
-          <td className="border px-3 py-2 font-mono">{r2.minutesToHuff}</td>
-          <td className="border px-3 py-2">{r2.iskPerHour.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+          <td className="border px-3 py-2">{Math.round(r2.m3PerCloud ?? r2.m3_per_cloud).toLocaleString()}</td>
+          <td className="border px-3 py-2 text-red-300">
+            {Math.round(r2.m3LostResidue ?? 0).toLocaleString()}
+          </td>
+          <td className="border px-3 py-2">
+            {(r2.iskPerCloud ?? r2.totalIskPerCloud).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
+          <td className="border px-3 py-2 text-red-300">
+            {(r2.iskLostResidue ?? 0).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
+          <td className="border px-3 py-2 font-mono">{ttk2}</td>
+          <td className="border px-3 py-2">
+            {r2.iskPerHour.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </td>
         </tr>
       );
     }
     return rows;
   })()}
 </tbody>
+
             </table>
           </div>
         )}

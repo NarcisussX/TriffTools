@@ -125,10 +125,7 @@ export default function PiCalc() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#1e1f29] text-gray-100 font-mono overflow-hidden">
-      <div className="absolute inset-0 z-0 animate-starfield pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 to-transparent z-10" />
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-blue-400/20 to-transparent z-10" />
+    <div className="font-mono">
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
           <p className="mb-1">

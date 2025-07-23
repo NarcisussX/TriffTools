@@ -16,3 +16,11 @@
   opacity: 0.1;
   z-index: 0;
 }
+
+.static-starfield {
+  background-image: url('https://tse2.mm.bing.net/th/id/OIP.tgvaZiG8Uq38J78m5QKPlgHaHa?w=474&h=474&c=7'); /* You can use a subtle starfield PNG or make one */
+  background-repeat: repeat;
+  background-size: 1000px 1000px;
+  opacity: 0.1;
+  z-index: 0;
+}

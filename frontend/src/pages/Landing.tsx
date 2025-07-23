@@ -41,8 +41,7 @@ const TOOLS = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#16192e] via-[#1a2139] to-[#171d31] text-gray-100">
-      <div className="absolute inset-0 z-0 pointer-events-none animate-starfield" />
+    <div>
       <div className="max-w-3xl mx-auto px-5 py-20 relative z-10 flex flex-col items-center">
         <h1 className="text-5xl sm:text-7xl font-extrabold mb-2 text-white-200 drop-shadow-[0_0_16px_white]">
           Triff.Tools
