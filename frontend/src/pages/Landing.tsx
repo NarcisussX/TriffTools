@@ -8,6 +8,12 @@ const TOOLS = [
     icon: "⛽️️"
   },
   {
+    name: "Ore Mining Calculator",
+    link: "/ore",
+    desc: "Gas calculator, but for ore. Including boosting math.",
+    icon: "⛏️"
+  },
+  {
     name: "PI Profitability Calculator",
     link: "/pi-calc",
     desc: "Batch profit calculator for all Planetary Interaction chains.",
@@ -30,6 +36,18 @@ const TOOLS = [
     link: "/wormhole-sites",
     desc: "Reference sheet for all sleeper combat/data/relic sites in J space",
     icon: "💥"
+  },
+  //{
+  //  name: "Roadmap",
+  //  link: "/roadmap",
+  //  desc: "What's next for Triff.Tools",
+  //  icon: "📍"
+  //},
+  {
+    name: "Changelog",
+    link: "/changelog",
+    desc: "What's no longer next for Triff.Tools",
+    icon: "📝"
   },
     {
     name: "Acknowledgements",

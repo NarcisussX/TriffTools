@@ -25,7 +25,8 @@ app.use('/api/industry', industryBlueprints);
 const industrySystems = require('./routes/industrySystems');
 app.use('/api/industry', industrySystems);
 app.use("/api/data", express.static(path.join(__dirname, "routes", "data")));
-
+const oreCalcRoute = require('./routes/oreCalc');
+app.use('/api', oreCalcRoute);
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

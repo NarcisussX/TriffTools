@@ -8,6 +8,8 @@ export default function BlootCalc() {
   const [results, setResults] = useState([]);
   const [totalISK, setTotalISK] = useState(0);
   const [accounting, setAccounting] = useState(5);
+  const [drifterRan, setDrifterRan] = useState(true);
+
 
   const removePlayer = (index: number) => {
     setPlayers((prev) => prev.filter((_, i) => i !== index));
@@ -42,17 +44,20 @@ export default function BlootCalc() {
 
   const addPlayer = () => {
     if (!playerName.trim()) return;
-    setPlayers([...players, { name: playerName.trim(), marauders: 0, dread: 0, bubbler: false }]);
+    setPlayers([...players, { name: playerName.trim(), marauders: 0, dread: 0, bubbler: false, extraShares: 0 }]);
     setPlayerName("");
   };
 
   const updatePlayer = (index, field, value) => {
     const updated = [...players];
     if (field === "bubbler") {
-      updated[index][field] = value;
-    } else {
-      updated[index][field] = parseInt(value) || 0;
-    }
+  updated[index][field] = value;
+} else if (field === "extraShares") {
+  updated[index][field] = parseFloat(value) || 0;
+} else {
+  updated[index][field] = parseInt(value) || 0;
+}
+
     setPlayers(updated);
   };
 
@@ -71,7 +76,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ siteRuns: formattedSiteRuns, players, accounting }),
+      body: JSON.stringify({ siteRuns: formattedSiteRuns, players, accounting, drifterRan }),
     });
 
     if (!response.ok) {
@@ -89,12 +94,16 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 };
 
+const tooltipStyle = "relative group cursor-help";
+const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition z-10 w-64 text-left whitespace-normal";
+
+
   return (
     <>
     <div className="font-mono">
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
-  This tool calculates a fair (share based) ISK split for C5 and C6 wormhole sites based on how many ships each player brought — including tiered share system for multiboxed marauders, dreads, and tackle. Just enter the number of sites and ships used, and it handles the math for you. Upgraded Avenger and big drifter loot are automatically included if a dread is in fleet composition.
+  This tool calculates a fair (share based) ISK split for C5 and C6 wormhole sites based on how many ships each player brought — including tiered share system for multiboxed marauders, dreads, and tackle. Just enter the number of sites and ships used, and it handles the math for you. Upgraded Avenger and big drifter loot are automatically included if a dread is in fleet composition and the "Drifter ran?" box is "Yes".
 </div>
       <div className="max-w-4xl mx-auto bg-[rgba(20,25,40,0.75)] backdrop-blur-sm border border-gray-700 p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">📦 Blue Loot Split Calculator</h2>
@@ -146,7 +155,17 @@ const handleSubmit = async (e: React.FormEvent) => {
     ))}
   </div>
 </div>
-
+<div className="mt-4 flex items-center gap-4">
+  <label className="text-lg font-semibold text-red-300">Drifter ran?</label>
+  <select
+    value={drifterRan ? "yes" : "no"}
+    onChange={(e) => setDrifterRan(e.target.value === "yes")}
+    className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm"
+  >
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
 
           {/* Player Setup */}
           <div>
@@ -176,17 +195,37 @@ const handleSubmit = async (e: React.FormEvent) => {
 
  <div className="space-y-2">
   {players.length > 0 && (
-    <div className="grid grid-cols-[8rem_6rem_6rem_6rem_4rem] gap-3 text-sm text-gray-400 text-center font-semibold mb-1 px-1">
-      <div>Name</div>
-      <div>Marauders</div>
-      <div>Dreads</div>
-      <div className="text-center">Tackle</div>
-      <div>Delete</div>
-    </div>
+<div className="grid grid-cols-[8rem_6rem_6rem_6rem_6rem_4rem] gap-3 text-sm text-gray-400 text-center font-semibold mb-1 px-1">
+  <div>Name</div>
+  <div>Marauders</div>
+  <div>Dreads</div>
+  <div>Tackle</div>
+<div className={tooltipStyle + " flex items-center justify-center gap-1"}>
+  <span>+ Shares</span>
+  <svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  className="w-4 h-4 text-gray-400 group-hover:text-white transition"
+>
+  <path
+    fillRule="evenodd"
+    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.01 17a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm1.61-7.84-.9.92c-.68.7-1.01 1.27-1.01 2.42h-1.5v-.38c0-1.1.33-1.93 1.11-2.74l1.24-1.26c.38-.39.55-.83.55-1.31 0-1.02-.84-1.85-1.87-1.85s-1.87.83-1.87 1.85H8c0-1.83 1.52-3.35 3.38-3.35S14.75 8.7 14.75 10c0 .78-.29 1.44-.83 1.96z"
+    clipRule="evenodd"
+  />
+</svg>
+  <div className={tooltipBox}>
+    Use this if some psycho brought something OTHER than a dread/marauder, like a vindi or booster. You can also use this for Leshak/Nestor and kiki/guard fleets, with your own custom shares.
+  </div>
+</div>
+
+  <div>Delete</div>
+</div>
+
   )}
 
   {players.map((player, index) => (
-    <div key={index} className="grid grid-cols-[8rem_6rem_6rem_6rem_4rem] gap-3 items-center px-1">
+    <div key={index} className="grid grid-cols-[8rem_6rem_6rem_6rem_6rem_4rem] gap-3 items-center px-1">
       <span className="text-center">{player.name}</span>
 
       <input
@@ -212,6 +251,13 @@ const handleSubmit = async (e: React.FormEvent) => {
           onChange={(e) => updatePlayer(index, "bubbler", e.target.checked)}
         />
       </div>
+<input
+  type="number"
+  inputMode="decimal"
+  value={player.extraShares || ""}
+  onChange={(e) => updatePlayer(index, "extraShares", e.target.value)}
+  className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
+/>
 
       <button
         type="button"

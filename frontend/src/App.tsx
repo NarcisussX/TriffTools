@@ -12,9 +12,11 @@ import Changelog from "./pages/changelog";
 import Roadmap from "./pages/roadmap";
 import { Settings } from "lucide-react";
 import { useBg } from "./BgContext"; 
+import OreCalculator from "./pages/OreCalculator";
 
 const navItems = [
   { to: "/gas-calc", label: "Gas Calculator" },
+  { to: "/ore", label: "Ore Calculator" },
   { to: "/bloot", label: "Ratting Split Calc" },
   { to: "/pi-calc", label: "PIP-C" },
   { to: "/rolling-mass", label: "Rolling Mass" },
@@ -116,6 +118,7 @@ export default function App() {
           <Route path="/acknowledgements" element={<Acknowledgements />} />
           <Route path="/changelog" element={<Changelog />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/ore" element={<OreCalculator />} />
         </Routes>
       </main>
     </div>

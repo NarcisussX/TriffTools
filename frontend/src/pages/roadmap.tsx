@@ -16,10 +16,7 @@ export default function Roadmap() {
               <span className="text-white font-semibold">Hybrid reactions (all reactions?) calculator</span> 
             </li>
             <li>
-              <span className="text-white font-semibold">Mining isk/hr calculator like gas huffing page</span> 
-            </li>
-            <li>
-              <span className="text-white font-semibold">Industry Calculator</span> - Stretch Goal
+              <span className="text-white font-semibold">Video, text and image guides</span>
             </li>
             <li>
               <span className="text-white font-semibold">UI/UX Cleanup</span> 
@@ -28,10 +25,10 @@ export default function Roadmap() {
               <span className="text-white font-semibold">Temporary: localStorage saving huffing fleet comps</span> - Suggested by Absurdly
             </li>
             <li>
-              <span className="text-white font-semibold">ESI account linking for permanent storage of settings</span>
+              <span className="text-white font-semibold">ESI account linking for permanent storage of settings</span> - Stretch Goal
             </li>
             <li>
-              <span className="text-white font-semibold">Trigger ship view only on PvE sites</span> — Suggested by Luxx
+              <span className="text-white font-semibold">Industry Calculator</span> - Stretch Goal
             </li>
           </ul>
         </div>

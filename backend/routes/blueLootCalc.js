@@ -26,37 +26,51 @@ const siteValues = {
   "Forgotten Core Circuitry Disassembler": { base: 657_600_000, dreadBonus: 140_000_000 }
 };
 
-function calculateSiteISK(siteName, count, usedDread) {
+function calculateSiteISK(siteName, count, usedDread, drifterRan) {
   const site = siteValues[siteName];
   if (!site) return 0;
-  return count * (site.base + (usedDread ? site.dreadBonus : 0));
+
+  let base = site.base + (usedDread ? site.dreadBonus : 0);
+
+  // Apply Drifter penalty if toggle is OFF (drifterRan is false)
+  const subtractSites = [
+    "Core Garrison", "Core Stronghold", "Oruze Osobnyk", "Quarantine Area",
+    "Core Bastion", "Core Citadel", "Strange Energy Readings", "The Mirror"
+  ];
+
+  if (!drifterRan && subtractSites.includes(siteName)) {
+    base -= 100_000_000;
+  }
+
+  return count * base;
 }
+
 
 function calculatePlayerShares(player) {
   let shares = 0;
 
-  // Marauder diminishing returns
   for (let i = 0; i < player.marauders; i++) {
-    if (i === 0) shares += 1.5;
-    else if (i === 1) shares += 1.0;
-    else shares += 0.5;
+    shares += i === 0 ? 1.5 : i === 1 ? 1.0 : 0.5;
   }
 
-  // Dread diminishing returns
   for (let i = 0; i < player.dread; i++) {
     shares += i === 0 ? 2.5 : 1.5;
   }
 
-  // Bubbler
   if (player.bubbler) {
     shares += 0.5;
+  }
+
+  if (typeof player.extraShares === "number") {
+    shares += player.extraShares;
   }
 
   return shares;
 }
 
+
 router.post("/api/blue-loot-calc", (req, res) => {
-  const { siteRuns, players, accounting = 5 } = req.body;
+  const { siteRuns, players, accounting = 5, drifterRan = true } = req.body;
   console.log("🧾 Incoming request body:", req.body);
   if (!Array.isArray(siteRuns) || !Array.isArray(players)) {
     return res.status(400).json({ error: "Missing or invalid siteRuns or players array." });
@@ -65,8 +79,9 @@ router.post("/api/blue-loot-calc", (req, res) => {
   // Calculate total ISK from sites
   let totalISK = 0;
   for (const { siteName, count, usedDread } of siteRuns) {
-    totalISK += calculateSiteISK(siteName, count, usedDread);
+    totalISK += calculateSiteISK(siteName, count, usedDread, drifterRan);
   }
+
 
   // Calculate shares
   const playerShares = players.map((p, index) => ({

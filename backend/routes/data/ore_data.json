@@ -1,0 +1,202 @@
+{
+  "Arkonor": {
+    "m3": 16.0,
+    "id": 62568
+  },
+  "Azure Plagioclase": {
+    "m3": 0.35,
+    "id": 62529
+  },
+  "Bistot": {
+    "m3": 16.0,
+    "id": 62564
+  },
+  "Bright Spodumain": {
+    "m3": 16.0,
+    "id": 62573
+  },
+  "Concentrated Veldspar": {
+    "m3": 0.1,
+    "id": 62517
+  },
+  "Condensed Scordite": {
+    "m3": 0.15,
+    "id": 62521
+  },
+  "Crimson Arkonor": {
+    "m3": 16.0,
+    "id": 62569
+  },
+  "Crokite": {
+    "m3": 16.0,
+    "id": 62560
+  },
+  "Crystalline Crokite": {
+    "m3": 16.0,
+    "id": 62562
+  },
+  "Dark Ochre": {
+    "m3": 8.0,
+    "id": 62556
+  },
+  "Dense Veldspar": {
+    "m3": 0.1,
+    "id": 62518
+  },
+  "Fiery Kernite": {
+    "m3": 1.2,
+    "id": 62538
+  },
+  "Glazed Hedbergite": {
+    "m3": 3.0,
+    "id": 62550
+  },
+  "Gleaming Spodumain": {
+    "m3": 16.0,
+    "id": 62574
+  },
+  "Gneiss": {
+    "m3": 5.0,
+    "id": 62552
+  },
+  "Golden Omber": {
+    "m3": 0.6,
+    "id": 62534
+  },
+  "Hedbergite": {
+    "m3": 3.0,
+    "id": 62548
+  },
+  "Hemorphite": {
+    "m3": 3.0,
+    "id": 62544
+  },
+  "Iridescent Gneiss": {
+    "m3": 5.0,
+    "id": 62553
+  },
+  "Jaspet": {
+    "m3": 2.0,
+    "id": 62540
+  },
+  "Kernite": {
+    "m3": 1.2,
+    "id": 62536
+  },
+  "Luminous Kernite": {
+    "m3": 1.2,
+    "id": 62537
+  },
+  "Massive Scordite": {
+    "m3": 0.15,
+    "id": 62522
+  },
+  "Monoclinic Bistot": {
+    "m3": 16.0,
+    "id": 62566
+  },
+  "Obsidian Ochre": {
+    "m3": 8.0,
+    "id": 62558
+  },
+  "Omber": {
+    "m3": 0.6,
+    "id": 62532
+  },
+  "Onyx Ochre": {
+    "m3": 8.0,
+    "id": 62557
+  },
+  "Plagioclase": {
+    "m3": 0.35,
+    "id": 62528
+  },
+  "Prime Arkonor": {
+    "m3": 16.0,
+    "id": 62570
+  },
+  "Prismatic Gneiss": {
+    "m3": 5.0,
+    "id": 62554
+  },
+  "Pristine Jaspet": {
+    "m3": 2.0,
+    "id": 62542
+  },
+  "Pure Jaspet": {
+    "m3": 2.0,
+    "id": 62541
+  },
+  "Pyroxeres": {
+    "m3": 0.3,
+    "id": 62524
+  },
+  "Radiant Hemorphite": {
+    "m3": 3.0,
+    "id": 62546
+  },
+  "Rich Plagioclase": {
+    "m3": 0.35,
+    "id": 62530
+  },
+  "Scordite": {
+    "m3": 0.15,
+    "id": 62520
+  },
+  "Sharp Crokite": {
+    "m3": 16.0,
+    "id": 62561
+  },
+  "Silvery Omber": {
+    "m3": 0.6,
+    "id": 62533
+  },
+  "Solid Pyroxeres": {
+    "m3": 0.3,
+    "id": 62525
+  },
+  "Spodumain": {
+    "m3": 16.0,
+    "id": 62572
+  },
+  "Triclinic Bistot": {
+    "m3": 16.0,
+    "id": 62565
+  },
+  "Veldspar": {
+    "m3": 0.1,
+    "id": 62516
+  },
+  "Viscous Pyroxeres": {
+    "m3": 0.3,
+    "id": 62526
+  },
+  "Vitric Hedbergite": {
+    "m3": 3.0,
+    "id": 62549
+  },
+  "Vivid Hemorphite": {
+    "m3": 3.0,
+    "id": 62545
+  },
+  "Ytirium": {
+    "m3": 0.6,
+    "id": 75279
+  },
+  "Jet Ochre": {
+    "m3": 8.0,
+    "id": 62559
+  },
+  "Mordunium": {
+    "m3": 0.1,
+    "id": 75275
+  },
+  "Eifyrium": {
+    "m3": 16.0,
+    "id": 75283
+  },
+  "Ducinium": {
+    "m3": 16.0,
+    "id": 75287
+  }
+}

@@ -5,16 +5,6 @@ const ships = [
   "Unbonused Ship", "Venture", "Prospect", "Covetor", "Retriever", "Procurer", "Hulk", "Skiff", "Mackinaw"
 ];
 
-const modules = Object.keys({
-  "Gas Cloud Scoop I": {},
-  "Crop' Gas Cloud Scoop": {},
-  "Plow' Gas Cloud Scoop": {},
-  "Gas Cloud Scoop II": {},
-  "Syndicate Gas Cloud Scoop": {},
-  "Gas Cloud Harvester I": {},
-  "Gas Cloud Harvester II": {},
-  "ORE Gas Cloud Harvester": {}
-});
 
 const implants = [
   { label: "None", value: 0 },
@@ -172,6 +162,25 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
+const scoops = {
+  "Gas Cloud Scoop I": {},
+  "Crop' Gas Cloud Scoop": {},
+  "Plow' Gas Cloud Scoop": {},
+  "Gas Cloud Scoop II": {},
+  "Syndicate Gas Cloud Scoop": {}
+};
+
+const harvesters = {
+  "Gas Cloud Harvester I": {},
+  "Gas Cloud Harvester II": {},
+  "ORE Gas Cloud Harvester": {}
+};
+
+const isFrigate = ["Unbonused Ship", "Venture", "Prospect"].includes(form.ship);
+const isBarge = ["Covetor", "Retriever", "Procurer", "Hulk", "Skiff", "Mackinaw"].includes(form.ship);
+const modules = Object.keys(isFrigate ? scoops : isBarge ? harvesters : {});
+
 
   return (
     <div className="font-mono">
