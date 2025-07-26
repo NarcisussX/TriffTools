@@ -28,21 +28,27 @@ const TOOLS = [
     {
     name: "Hole Rolling Guide",
     link: "/rolling-mass",
-    desc: "Quick reference cheat sheet for rolling wormholes",
+    desc: "Quick reference cheat sheet for rolling wormholes.",
     icon: "🕳️"
   },
   {
     name: "Wormhole PvE Sites",
     link: "/wormhole-sites",
-    desc: "Reference sheet for all sleeper combat/data/relic sites in J space",
+    desc: "Reference sheet for all sleeper combat/data/relic sites in J space.",
     icon: "💥"
   },
-  //{
-  //  name: "Roadmap",
-  //  link: "/roadmap",
-  //  desc: "What's next for Triff.Tools",
-  //  icon: "📍"
-  //},
+  {
+    name: "Time Converter",
+    link: "/timestamp",
+    desc: "Both a Discord timestamp generator and EVE time converter.",
+    icon: "📅"
+  },
+  {
+    name: "Roadmap",
+    link: "/roadmap",
+    desc: "What's next for Triff.Tools",
+    icon: "📍"
+  },
   {
     name: "Changelog",
     link: "/changelog",

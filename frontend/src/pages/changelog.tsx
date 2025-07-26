@@ -8,6 +8,22 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            7/25/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Add EVE time converter and discord timestamp generator - /timestamp</span>
+            </li>
+            <li>
+              <span className="text-white font-semibold">Update navbar to drawer</span>
+            </li>
+            <li>
+              <span className="text-white font-semibold">Add current TQ population count to header</span>
+            </li>
+          </ul>
+          
+          <p>
             7/24/2025
           </p>
 

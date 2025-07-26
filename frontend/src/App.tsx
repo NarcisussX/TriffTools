@@ -1,27 +1,32 @@
+// App.tsx
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Menu, X, Settings } from "lucide-react";
+import { useBg } from "./BgContext"; 
+
 import Landing from "./pages/Landing";
 import GasCalc from "./pages/GasCalc";
-import BlootCalc from './pages/blootCalc';
+import BlootCalc from "./pages/blootCalc";
 import PiCalc from "./pages/piCalc";
 import RollingMass from "./pages/RollingMass";
 import WormholeSites from "./pages/WormholeSites";
 import Acknowledgements from "./pages/acknowledgements";
-import { Menu, X } from "lucide-react";
 import Changelog from "./pages/changelog";
 import Roadmap from "./pages/roadmap";
-import { Settings } from "lucide-react";
-import { useBg } from "./BgContext"; 
 import OreCalculator from "./pages/OreCalculator";
+import TimestampTool from "./pages/Timestamp";
 
 const navItems = [
   { to: "/gas-calc", label: "Gas Calculator" },
   { to: "/ore", label: "Ore Calculator" },
   { to: "/bloot", label: "Ratting Split Calc" },
-  { to: "/pi-calc", label: "PIP-C" },
+  { to: "/pi-calc", label: "PI Profitability" },
   { to: "/rolling-mass", label: "Rolling Mass" },
   { to: "/wormhole-sites", label: "Wormhole PvE Sites" },
+  { to: "/timestamp", label: "Time Converter" },
   { to: "/acknowledgements", label: "Acknowledgements" },
+  { to: "/changelog", label: "Changelog" },
+  { to: "/roadmap", label: "Roadmap" },
 ];
 
 export default function App() {
@@ -29,10 +34,31 @@ export default function App() {
   const location = useLocation();
   const { animated, setAnimated } = useBg();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [playersOnline, setPlayersOnline] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const res = await fetch("https://esi.evetech.net/latest/status/?datasource=tranquility");
+        const data = await res.json();
+        setPlayersOnline(data.players);
+      } catch {
+        setPlayersOnline(null);
+      }
+    };
+    fetchPlayers();
+    const interval = setInterval(fetchPlayers, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Close menu when route changes
+    setIsOpen(false);
+  }, [location.pathname]);
 
   return (
-    <div className="relative-min-h-screen text-white font-sans">
-      <header className="bg-accent shadow-md">
+    <div className="relative min-h-screen text-white font-sans bg-background">
+      <header className="bg-accent shadow-md z-50 relative">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Link
@@ -41,7 +67,7 @@ export default function App() {
             >
               Triff.Tools
             </Link>
-            {/* Settings icon */}
+            {/* Settings Icon */}
             <div className="relative">
               <button
                 className="ml-0 mt-[3px] p-1 rounded-full hover:bg-accent/70 focus:outline-none"
@@ -50,7 +76,6 @@ export default function App() {
               >
                 <Settings size={20} />
               </button>
-              {/* Dropdown */}
               {showDropdown && (
                 <div className="absolute left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg min-w-[180px] z-50 p-2">
                   <button
@@ -66,44 +91,48 @@ export default function App() {
               )}
             </div>
           </div>
+<div className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs sm:text-sm text-blue-300 pointer-events-none select-none">
+          <span className="text-sm text-blue-400 font-mono">
+            {playersOnline !== null ? `TQ: ${playersOnline.toLocaleString()} online` : "🛰️ Connecting..."}
+          </span>
+        </div>
+          {/* Burger icon always visible */}
           <button
-            className="md:hidden text-white"
+            className="text-white z-50"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
-          <nav className="hidden md:flex space-x-6 text-sm font-medium">
-            {navItems.map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`hover:text-highlight transition-colors ${
-                  location.pathname === to ? "text-highlight underline" : ""
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
         </div>
 
-        {/* Mobile menu */}
-        {isOpen && (
-          <div className="md:hidden bg-primary border-t border-gray-700 px-4 py-2 space-y-2">
+        {/* Right drawer */}
+        <div
+          className={`fixed top-0 right-0 h-full w-64 bg-gray-900 shadow-lg z-40 transform transition-transform duration-300 ease-in-out ${
+            isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex flex-col h-full p-4 space-y-4">
             {navItems.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className={`block text-sm py-1 px-2 rounded hover:bg-accent hover:text-highlight transition ${
+                className={`text-white py-2 px-4 rounded hover:bg-accent hover:text-highlight transition ${
                   location.pathname === to ? "text-highlight underline" : ""
                 }`}
-                onClick={() => setIsOpen(false)}
               >
                 {label}
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Overlay when menu is open */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-40 z-30"
+            onClick={() => setIsOpen(false)}
+          />
         )}
       </header>
 
@@ -119,6 +148,7 @@ export default function App() {
           <Route path="/changelog" element={<Changelog />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/ore" element={<OreCalculator />} />
+          <Route path="/timestamp" element={<TimestampTool />} />
         </Routes>
       </main>
     </div>
