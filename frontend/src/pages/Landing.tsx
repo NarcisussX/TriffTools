@@ -46,7 +46,7 @@ const TOOLS = [
   {
     name: "Wormhole Database",
     link: "/wormholes",
-    desc: "Wormhole databse/search tool heavily inspired by Anoik.is.",
+    desc: "Wormhole database/search tool heavily inspired by Anoik.is.",
     icon: "🗺️"
   },
   {
