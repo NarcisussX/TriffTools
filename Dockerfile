@@ -22,6 +22,7 @@ WORKDIR /app
 
 COPY --from=builder-stage /app/frontend/dist ./frontend/dist
 COPY --from=builder-stage /app/backend ./backend
+COPY --from=builder-stage /app/backend/data/enriched_systems.json ./backend/data/enriched_systems.json
 
 WORKDIR /app
 EXPOSE 3000

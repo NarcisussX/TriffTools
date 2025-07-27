@@ -19,6 +19,9 @@ export default function Acknowledgements() {
               <span className="text-white font-semibold">Rykki, Karr, Nolak, and Grubu</span> — for the OG wormhole combat site reference.
             </li>
             <li>
+              <span className="text-white font-semibold">Eric Wastl</span> — The developer of Anoik.is who's layout and styling I heavily borrowed from.
+            </li>
+            <li>
               <span className="text-white font-semibold">EVE Wormhole Gas Sites Google Doc</span> — for the inspiration that started this site.
             </li>
             <li>

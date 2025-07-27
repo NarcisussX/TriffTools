@@ -27,6 +27,11 @@ app.use('/api/industry', industrySystems);
 app.use("/api/data", express.static(path.join(__dirname, "routes", "data")));
 const oreCalcRoute = require('./routes/oreCalc');
 app.use('/api', oreCalcRoute);
+const wormholesRoute = require('./routes/wormholes');
+app.use('/api/wormholes', wormholesRoute);
+const killboardRoutes = require("./routes/killboard");
+app.use("/api", killboardRoutes);
+
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

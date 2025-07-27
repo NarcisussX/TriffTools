@@ -44,6 +44,12 @@ const TOOLS = [
     icon: "📅"
   },
   {
+    name: "Wormhole Database",
+    link: "/wormholes",
+    desc: "Wormhole databse/search tool heavily inspired by Anoik.is.",
+    icon: "🗺️"
+  },
+  {
     name: "Roadmap",
     link: "/roadmap",
     desc: "What's next for Triff.Tools",
@@ -55,12 +61,12 @@ const TOOLS = [
     desc: "What's no longer next for Triff.Tools",
     icon: "📝"
   },
-    {
-    name: "Acknowledgements",
-    link: "/acknowledgements",
-    desc: "The people who made this project possible.",
-    icon: "💬"
-  },
+  //{
+  //  name: "Acknowledgements",
+  //  link: "/acknowledgements",
+  //  desc: "The people who made this project possible.",
+  //  icon: "💬"
+  //},
 ];
 
 export default function Landing() {

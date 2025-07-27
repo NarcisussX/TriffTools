@@ -54,6 +54,33 @@ await pool.query(`
   );
 `);
 
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS wormhole_systems (
+    jcode TEXT PRIMARY KEY,
+    region TEXT,
+    constellation TEXT,
+    solarsystemid TEXT,
+    class TEXT,
+    effect TEXT,
+    statics TEXT[],        -- ✅ Add this
+    star_id BIGINT,        -- ✅ Add this
+    star_name TEXT,
+    star_type_id INTEGER
+  );
+`);
+
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS planets (
+      planet_id BIGINT PRIMARY KEY,
+      jcode TEXT REFERENCES wormhole_systems(jcode),
+      name TEXT,
+      type_id INTEGER,
+      type_name TEXT,
+      moon_count INTEGER
+    );
+  `);
 }
 
 module.exports = {

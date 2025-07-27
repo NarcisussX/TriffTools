@@ -8,6 +8,21 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            7/26/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Add wormhole database - /wormholes</span>
+            </li>
+            <li>
+              <span className="text-white font-semibold">Minor UI/UX upgrades</span>
+            </li>
+            <li>
+              <span className="text-white font-semibold">New DB and API schema to accommodate wormhole database</span>
+            </li>
+          </ul>
+          <p>
             7/25/2025
           </p>
 

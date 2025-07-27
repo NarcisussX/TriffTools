@@ -15,6 +15,7 @@ import Changelog from "./pages/changelog";
 import Roadmap from "./pages/roadmap";
 import OreCalculator from "./pages/OreCalculator";
 import TimestampTool from "./pages/Timestamp";
+import WormholeDatabase from "./pages/WormholeDatabase";
 
 const navItems = [
   { to: "/gas-calc", label: "Gas Calculator" },
@@ -24,6 +25,7 @@ const navItems = [
   { to: "/rolling-mass", label: "Rolling Mass" },
   { to: "/wormhole-sites", label: "Wormhole PvE Sites" },
   { to: "/timestamp", label: "Time Converter" },
+  { to: "/wormholes", label: "Wormhole Database"},
   { to: "/acknowledgements", label: "Acknowledgements" },
   { to: "/changelog", label: "Changelog" },
   { to: "/roadmap", label: "Roadmap" },
@@ -149,6 +151,7 @@ export default function App() {
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/ore" element={<OreCalculator />} />
           <Route path="/timestamp" element={<TimestampTool />} />
+          <Route path="/wormholes" element={<WormholeDatabase />} />
         </Routes>
       </main>
     </div>
