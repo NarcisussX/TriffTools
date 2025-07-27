@@ -39,11 +39,12 @@ function calculateSiteISK(siteName, count, usedDread, drifterRan) {
   ];
 
   if (!drifterRan && subtractSites.includes(siteName)) {
-    base -= 100_000_000;
+    base -= usedDread ? 300_000_000 : 100_000_000;
   }
 
   return count * base;
 }
+
 
 
 function calculatePlayerShares(player) {
