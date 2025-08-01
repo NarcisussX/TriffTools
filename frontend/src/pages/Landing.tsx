@@ -50,6 +50,18 @@ const TOOLS = [
     icon: "🗺️"
   },
   {
+    name: "Reactions Calculator",
+    link: "/reaction-calc",
+    desc: "Calculator for reactions profits (currently just hybrid, for WH's)",
+    icon: "🧪"
+  },
+  {
+    name: "Acknowledgements",
+    link: "/acknowledgements",
+    desc: "The people who made this project possible.",
+    icon: "💬"
+  },
+  {
     name: "Roadmap",
     link: "/roadmap",
     desc: "What's next for Triff.Tools",
@@ -61,12 +73,6 @@ const TOOLS = [
     desc: "What's no longer next for Triff.Tools",
     icon: "📝"
   },
-  //{
-  //  name: "Acknowledgements",
-  //  link: "/acknowledgements",
-  //  desc: "The people who made this project possible.",
-  //  icon: "💬"
-  //},
 ];
 
 export default function Landing() {

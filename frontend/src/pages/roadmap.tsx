@@ -13,7 +13,7 @@ export default function Roadmap() {
 
           <ul className="list-disc list-inside space-y-2">
             <li>
-              <span className="text-white font-semibold">Hybrid reactions (all reactions?) calculator</span> 
+              <span className="text-white font-semibold">Update hybrid reactions calculator with all reaction types + market taxes</span> 
             </li>
             <li>
               <span className="text-white font-semibold">Video, text and image guides</span>

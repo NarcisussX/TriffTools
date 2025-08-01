@@ -1,9 +1,11 @@
 const express = require("express");
+const fs = require("fs");
 const cors = require("cors");
 const path = require("path");
 const { OpenAI } = require("openai");
 const { ensureSchemaWithRetry } = require('./db');
 const pollJobCostIndices = require('./utils/pollJobCostIndices');
+const { fetchAdjustedPrices } = require("./utils/fetchAdjustedPrices");
 
 require("dotenv").config();
 
@@ -31,6 +33,9 @@ const wormholesRoute = require('./routes/wormholes');
 app.use('/api/wormholes', wormholesRoute);
 const killboardRoutes = require("./routes/killboard");
 app.use("/api", killboardRoutes);
+const reactionCalc = require("./routes/reactionCalc");
+app.use("/api", reactionCalc);
+
 
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -76,8 +81,30 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
-// Initial run
-pollJobCostIndices();
 
-// Repeat every hour
+pollJobCostIndices();
 setInterval(pollJobCostIndices, 60 * 60 * 1000);
+
+const CACHE_PATH = path.join(__dirname, "cache", "adjusted_prices.json");
+
+// Refresh if cache is missing or older than 24 hours
+const shouldUpdateAdjustedPrices = () => {
+  if (!fs.existsSync(CACHE_PATH)) return true;
+  const stats = fs.statSync(CACHE_PATH);
+  const ageMs = Date.now() - stats.mtimeMs;
+  return ageMs > 24 * 60 * 60 * 1000; // 24 hours
+};
+
+(async () => {
+  if (shouldUpdateAdjustedPrices()) {
+    console.log("[Adjusted Prices] Updating cache...");
+    try {
+      await fetchAdjustedPrices();
+      console.log("[Adjusted Prices] Cache updated.");
+    } catch (err) {
+      console.error("[Adjusted Prices] Failed to update:", err);
+    }
+  } else {
+    console.log("[Adjusted Prices] Cache is fresh.");
+  }
+})();

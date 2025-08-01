@@ -19,13 +19,16 @@ export default function Acknowledgements() {
               <span className="text-white font-semibold">Rykki, Karr, Nolak, and Grubu</span> — for the OG wormhole combat site reference.
             </li>
             <li>
-              <span className="text-white font-semibold">Eric Wastl</span> — The developer of Anoik.is who's layout and styling I heavily borrowed from.
+              <span className="text-white font-semibold">Eric Wastl</span> — the developer of Anoik.is who's layout and styling I heavily borrowed from.
             </li>
             <li>
               <span className="text-white font-semibold">EVE Wormhole Gas Sites Google Doc</span> — for the inspiration that started this site.
             </li>
             <li>
               <span className="text-white font-semibold">Algar Thesant</span> — for the best rolling battleship reference chart on the internet.
+            </li>
+            <li>
+              <span className="text-white font-semibold">reactions.coalition.space</span> — for the layout and styling behind the reactions calculator.
             </li>
             <li>
               <span className="text-white font-semibold">GESI</span> — for the tools to make my first eve tool (PIP-C) in google docs.

@@ -63,8 +63,8 @@ await pool.query(`
     solarsystemid TEXT,
     class TEXT,
     effect TEXT,
-    statics TEXT[],        -- ✅ Add this
-    star_id BIGINT,        -- ✅ Add this
+    statics TEXT[],
+    star_id BIGINT,
     star_name TEXT,
     star_type_id INTEGER
   );

@@ -153,7 +153,6 @@ const handleSubmit = async (e) => {
     const { data } = await axios.post("/api/gas-calc", form, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("🚀 Results from backend:", data);
     setResults(data);
   } catch (err) {
     console.error("❌ API call failed:", err?.response?.data || err.message);

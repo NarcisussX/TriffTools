@@ -92,7 +92,8 @@ const DATA = [
     color: "orange",
     codes: [
       "B520", "C248", "D792", "W237",
-      "C140", "C391", "H296", "Z142"
+      "C140", "C391", "H296", "Z142",
+      "V911"
     ],
     jump: {
       main: ["1 Cold Jump", "5 Hot Jumps"],

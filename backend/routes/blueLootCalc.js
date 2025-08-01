@@ -45,25 +45,50 @@ function calculateSiteISK(siteName, count, usedDread, drifterRan) {
   return count * base;
 }
 
+function calculatePlayerShares(players, useDpsLogiMode) {
+  const shares = [];
 
+  for (const player of players) {
+    let playerShares = 0;
 
-function calculatePlayerShares(player) {
-  let shares = 0;
+    if (useDpsLogiMode) {
+      // DPS
+      for (let i = 0; i < (player.dps || 0); i++) {
+        if (i < 2) playerShares += 1.0;
+        else if (i < 5) playerShares += 0.5;
+        else playerShares += 0.25;
+      }
 
-  for (let i = 0; i < player.marauders; i++) {
-    shares += i === 0 ? 1.5 : i === 1 ? 1.0 : 0.5;
-  }
+      // Logi
+      for (let i = 0; i < (player.logi || 0); i++) {
+        if (i === 0) playerShares += 1.5;
+        else if (i === 1) playerShares += 0.75;
+        else playerShares += 0.25;
+      }
 
-  for (let i = 0; i < player.dread; i++) {
-    shares += i === 0 ? 2.5 : 1.5;
-  }
+    } else {
+      // Dreads
+      for (let i = 0; i < (player.dread || 0); i++) {
+        if (i === 0) playerShares += 2.5;
+        else playerShares += 1.5;
+      }
 
-  if (player.bubbler) {
-    shares += 0.5;
-  }
+      // Marauders
+      for (let i = 0; i < (player.marauders || 0); i++) {
+        if (i === 0) playerShares += 1.5;
+        else if (i === 1) playerShares += 1.0;
+        else playerShares += 0.5;
+      }
+    }
 
-  if (typeof player.extraShares === "number") {
-    shares += player.extraShares;
+    // Extras
+    if (player.bubbler) playerShares += 0.5;
+    if (player.extraShares) playerShares += parseFloat(player.extraShares);
+
+    shares.push({
+      name: player.name,
+      shares: playerShares,
+    });
   }
 
   return shares;
@@ -85,23 +110,22 @@ router.post("/api/blue-loot-calc", (req, res) => {
 
 
   // Calculate shares
-  const playerShares = players.map((p, index) => ({
-    name: p.name || `Player ${index + 1}`,
-    shares: calculatePlayerShares(p)
-  }));
+// Calculate shares
+const useDpsLogiMode = siteRuns[0]?.useDpsLogiMode === true;
+const playerShares = calculatePlayerShares(players, useDpsLogiMode);
+const totalShares = playerShares.reduce((sum, p) => sum + p.shares, 0);
+const payoutPerShare = totalISK / totalShares;
 
-  const totalShares = playerShares.reduce((sum, p) => sum + p.shares, 0);
-  const payoutPerShare = totalISK / totalShares;
+const taxRate = 7.5 - (0.462 * accounting); // 11% decrease per level
+const taxMult = 1 - (taxRate / 100);
 
-  const taxRate = 7.5 - (0.462 * accounting); // 11% decrease per level
-  const taxMult = 1 - (taxRate / 100);
-  
-  // Final payouts
-  const payouts = playerShares.map((p) => ({
-    name: p.name,
-    shares: p.shares,
-    payout: Math.round(p.shares * payoutPerShare * taxMult)
-  }));
+// Final payouts
+const payouts = playerShares.map((p) => ({
+  name: p.name,
+  shares: p.shares,
+  payout: Math.round(p.shares * payoutPerShare * taxMult)
+}));
+
 
   res.json({
     totalISK,

@@ -9,6 +9,8 @@ export default function BlootCalc() {
   const [totalISK, setTotalISK] = useState(0);
   const [accounting, setAccounting] = useState(5);
   const [drifterRan, setDrifterRan] = useState(true);
+  const [useDpsLogiMode, setUseDpsLogiMode] = useState(false);
+
 
 
   const removePlayer = (index: number) => {
@@ -42,24 +44,36 @@ export default function BlootCalc() {
     setSiteRuns((prev) => ({ ...prev, [site]: parseInt(value) || 0 }));
   };
 
-  const addPlayer = () => {
-    if (!playerName.trim()) return;
-    setPlayers([...players, { name: playerName.trim(), marauders: 0, dread: 0, bubbler: false, extraShares: 0 }]);
-    setPlayerName("");
+const addPlayer = () => {
+  if (!playerName.trim()) return;
+
+  const base = {
+    name: playerName.trim(),
+    bubbler: false,
+    extraShares: 0,
   };
 
-  const updatePlayer = (index, field, value) => {
-    const updated = [...players];
-    if (field === "bubbler") {
-  updated[index][field] = value;
-} else if (field === "extraShares") {
-  updated[index][field] = parseFloat(value) || 0;
-} else {
-  updated[index][field] = parseInt(value) || 0;
-}
+  const player = useDpsLogiMode
+    ? { ...base, dps: 0, logi: 0 }
+    : { ...base, marauders: 0, dread: 0 };
 
-    setPlayers(updated);
-  };
+  setPlayers([...players, player]);
+  setPlayerName("");
+};
+
+
+const updatePlayer = (index, field, value) => {
+  const updated = [...players];
+  if (field === "bubbler") {
+    updated[index][field] = value;
+  } else if (field === "extraShares") {
+    updated[index][field] = parseFloat(value) || 0;
+  } else {
+    updated[index][field] = parseInt(value) || 0;
+  }
+  setPlayers(updated);
+};
+
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -68,6 +82,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     siteName,
     count,
     usedDread: players.some((p) => p.dread > 0),
+    useDpsLogiMode,
   }));
 
   try {
@@ -86,7 +101,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     const data = await response.json();
-    console.log("🔁 Backend response:", data);
     setResults(data.payouts);
     setTotalISK(data.totalISK); // 💰 add this
   } catch (error) {
@@ -95,7 +109,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 
 const tooltipStyle = "relative group cursor-help";
-const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition z-10 w-64 text-left whitespace-normal";
+const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition z-10 w-64 text-left whitespace-normal pointer-events-none";
 
 
   return (
@@ -194,11 +208,96 @@ const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/
             </div>
 
  <div className="space-y-2">
+<div className="flex items-center gap-3 mb-4">
+  <span className="text-sm font-semibold">Share Mode:</span>
+
+  <div className="flex rounded-full overflow-hidden border border-gray-600 text-sm">
+    <button
+      className={`px-3 py-1 transition ${
+        !useDpsLogiMode
+          ? "bg-blue-600 text-white"
+          : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+      }`}
+      onClick={() => {
+        if (useDpsLogiMode) {
+          // switching to Dread/Marauder
+          const updated = players.map((p) => ({
+            name: p.name,
+            marauders: 0,
+            dread: 0,
+            bubbler: p.bubbler || false,
+            extraShares: p.extraShares || 0,
+          }));
+          setPlayers(updated);
+          setUseDpsLogiMode(false);
+        }
+      }}
+    >
+      Dread / Marauder
+    </button>
+    <button
+      className={`px-3 py-1 transition ${
+        useDpsLogiMode
+          ? "bg-blue-600 text-white"
+          : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+      }`}
+      onClick={() => {
+        if (!useDpsLogiMode) {
+          // switching to DPS/Logi
+          const updated = players.map((p) => ({
+            name: p.name,
+            dps: 0,
+            logi: 0,
+            bubbler: p.bubbler || false,
+            extraShares: p.extraShares || 0,
+          }));
+          setPlayers(updated);
+          setUseDpsLogiMode(true);
+        }
+      }}
+    >
+      DPS / Logi
+    </button>
+  </div>
+
+<div className={tooltipStyle + " flex items-center justify-center gap-1"}>
+  <span> </span>
+  <svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  className="w-4 h-4 text-gray-400 group-hover:text-white transition"
+>
+  <path
+    fillRule="evenodd"
+    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.01 17a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm1.61-7.84-.9.92c-.68.7-1.01 1.27-1.01 2.42h-1.5v-.38c0-1.1.33-1.93 1.11-2.74l1.24-1.26c.38-.39.55-.83.55-1.31 0-1.02-.84-1.85-1.87-1.85s-1.87.83-1.87 1.85H8c0-1.83 1.52-3.35 3.38-3.35S14.75 8.7 14.75 10c0 .78-.29 1.44-.83 1.96z"
+    clipRule="evenodd"
+  />
+</svg>
+  <div className={tooltipBox}>
+    Toggle between Marauders/Dreads or Logi/DPS<br />
+    (dread payouts account for avengers and big drifter if applicable.)<br />
+    <br />
+    Logi/DPS mode is meant to handle Leshak/Nestor and WR fleets, with adjusted payouts.
+  </div>
+</div>
+
+</div>
+
   {players.length > 0 && (
 <div className="grid grid-cols-[8rem_6rem_6rem_6rem_6rem_4rem] gap-3 text-sm text-gray-400 text-center font-semibold mb-1 px-1">
   <div>Name</div>
-  <div>Marauders</div>
-  <div>Dreads</div>
+  {useDpsLogiMode ? (
+    <>
+      <div>DPS</div>
+      <div>Logi</div>
+    </>
+  ) : (
+    <>
+      <div>Marauders</div>
+      <div>Dreads</div>
+    </>
+  )}
   <div>Tackle</div>
 <div className={tooltipStyle + " flex items-center justify-center gap-1"}>
   <span>+ Shares</span>
@@ -215,7 +314,7 @@ const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/
   />
 </svg>
   <div className={tooltipBox}>
-    Use this if some psycho brought something OTHER than a dread/marauder, like a vindi or booster. You can also use this for Leshak/Nestor and kiki/guard fleets, with your own custom shares.
+    Use this if someone brought something abnormal, like a vindi or booster. You can also use this for boosting soloboxer and newbro shares, or tipping your scanner/eyes/rollers.
   </div>
 </div>
 
@@ -228,21 +327,42 @@ const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/
     <div key={index} className="grid grid-cols-[8rem_6rem_6rem_6rem_6rem_4rem] gap-3 items-center px-1">
       <span className="text-center">{player.name}</span>
 
-      <input
-        type="number"
-        inputMode="numeric"
-        value={player.marauders || ""}
-        onChange={(e) => updatePlayer(index, "marauders", e.target.value)}
-        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
-      />
+{useDpsLogiMode ? (
+  <>
+    <input
+      type="number"
+      inputMode="numeric"
+      value={player.dps || ""}
+      onChange={(e) => updatePlayer(index, "dps", e.target.value)}
+      className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
+    />
+    <input
+      type="number"
+      inputMode="numeric"
+      value={player.logi || ""}
+      onChange={(e) => updatePlayer(index, "logi", e.target.value)}
+      className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
+    />
+  </>
+) : (
+  <>
+    <input
+      type="number"
+      inputMode="numeric"
+      value={player.marauders || ""}
+      onChange={(e) => updatePlayer(index, "marauders", e.target.value)}
+      className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
+    />
+    <input
+      type="number"
+      inputMode="numeric"
+      value={player.dread || ""}
+      onChange={(e) => updatePlayer(index, "dread", e.target.value)}
+      className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
+    />
+  </>
+)}
 
-      <input
-        type="number"
-        inputMode="numeric"
-        value={player.dread || ""}
-        onChange={(e) => updatePlayer(index, "dread", e.target.value)}
-        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-center"
-      />
 
       <div className="flex justify-center">
         <input
@@ -304,9 +424,10 @@ const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/
                     <td className="border px-3 py-2">{r.name}</td>
                     <td className="border px-3 py-2">{r.shares}</td>
                     <td className="border px-3 py-2">
-                      {r.payout.toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
-                      })}
+{(r.payout ?? 0).toLocaleString(undefined, {
+  maximumFractionDigits: 0,
+})}
+
                     </td>
                   </tr>
                 ))}
@@ -316,39 +437,42 @@ const tooltipBox = "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/
         )}
       </div>
     </div>
-    <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
-  <p className="text-white font-semibold">
-           Share Allocation for Marauders:
-          </p>
+{useDpsLogiMode ? (
+  <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
+    <p className="text-white font-semibold">FC's: If you have a few people who can only fly logi *or* DPS and a few who are flying *both* logi and DPS, consider adding shares to the single-type players or subtracting (negative values in the extra shares column) from the dual type players to bring things in line. Or requesting only Logi and only DPS per player.</p>
+    <p className="text-white font-semibold mt-3">Share Allocation for DPS:</p>
+    <ul className="list-disc list-inside">
+      <li><span>First 2 DPS ships:</span> +1.0 </li>
+      <li><span>Next 3 DPS ships:</span> +0.5 </li>
+      <li><span>Each additional:</span> +0.25 shares each</li>
+    </ul>
+    <p className="text-white font-semibold mt-3">Share Allocation for Logi:</p>
+    <ul className="list-disc list-inside">
+      <li><span>First logi ship:</span> +1.5 shares</li>
+      <li><span>Second logi ship:</span> +0.75 shares</li>
+      <li><span>Each additional:</span> +0.25 shares</li>
+    </ul>
+    <p className="text-white font-semibold mt-3">Tackle/Bubbler:</p>
+    <p>+0.5 shares</p>
+  </div>
+) : (
+  <div className="max-w-4xl mx-auto bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-100 border border-gray-700 rounded-md p-4 text-sm mb-6 shadow-sm">
+    <p className="text-white font-semibold">Share Allocation for Marauders:</p>
+    <ul className="list-disc list-inside">
+      <li><span>First Marauder:</span> +1.5</li>
+      <li><span>Second Marauder:</span> +1.0</li>
+      <li><span>Each additional:</span> +0.5</li>
+    </ul>
+    <p className="text-white font-semibold mt-3">Share Allocation for Dreads:</p>
+    <ul className="list-disc list-inside">
+      <li><span>First Dread:</span> +2.5</li>
+      <li><span>Each additional:</span> +1.5</li>
+    </ul>
+    <p className="text-white font-semibold mt-3">Tackle/Bubbler:</p>
+    <p>+0.5 shares</p>
+  </div>
+)}
 
-          <ul className="list-disc list-inside">
-            <li>
-              <span>First Marauder (for that player)</span> +1.5
-            </li>
-            <li>
-              <span>Second Marauder multiboxed:</span> +1.0
-            </li>
-            <li>
-              <span>Every Marauder for that player after:</span> +0.5
-            </li>
-          </ul>
-          <p className="text-white font-semibold">
-           Share Allocation for Dreads:
-          </p>
-
-          <ul className="list-disc list-inside">
-            <li>
-              <span>First Dread (for that player):</span> +2.5
-            </li>
-            <li>
-              <span>Every Dread for that player after:</span> +1.5
-            </li>
-          </ul>
-          <p/>
-          <p className="text-white font-semibold">
-           Running the tackle frigate earns +0.5 shares.
-          </p>
-</div>
     </div>
     </>
   );

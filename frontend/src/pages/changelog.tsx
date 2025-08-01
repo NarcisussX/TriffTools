@@ -8,6 +8,24 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            7/31/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Add hybrid reactions calculator - /reaction-calc</span>
+            </li>
+          </ul>
+          <p>
+            7/29/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Added DPS/Logi toggle to Blue loot share splitter</span> - Suggested by Kattar
+            </li>
+          </ul>
+          <p>
             7/26/2025
           </p>
 
