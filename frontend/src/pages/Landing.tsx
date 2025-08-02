@@ -86,13 +86,6 @@ export default function Landing() {
           An EVE Online Wormhole Utility Suite<br />
           <span className="text-cyan-100 font-semibold tracking-wider">The premier one-stop-shop wormhole reference tool.</span>
         </div>
-        <Link
-          to="/gas-calc"
-          className="bg-blue-700 hover:bg-accent px-8 py-3 mb-12 rounded-xl text-xl font-semibold shadow-lg transition-colors"
-        >
-          Start Calculating
-        </Link>
-
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
           {TOOLS.map((tool) => (
             <Link
