@@ -83,8 +83,8 @@ export default function Landing() {
           Triff.Tools
         </h1>
         <div className="text-lg sm:text-2xl font-medium text-blue-200 mb-8 text-center ">
-          The EVE Online Wormhole Utility Suite<br />
-          <span className="text-cyan-100 font-semibold tracking-wider">A premier one-stop-shop wormhole reference tool.</span>
+          An EVE Online Wormhole Utility Suite<br />
+          <span className="text-cyan-100 font-semibold tracking-wider">The premier one-stop-shop wormhole reference tool.</span>
         </div>
         <Link
           to="/gas-calc"

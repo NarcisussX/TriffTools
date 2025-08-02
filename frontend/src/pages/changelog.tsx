@@ -8,6 +8,15 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            8/01/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Updated domain name to triff.tools - old (triffnix.com) will redirect.</span>
+            </li>
+          </ul>
+          <p>
             7/31/2025
           </p>
 
