@@ -168,9 +168,9 @@ export default function WaveTable({ ships }: { ships: Ship[] }) {
   })()}
 </td>
 
-              <td className="w-24 p-2">{(ship.ehp * ship.qty).toLocaleString()}</td>
-              <td className="w-20 p-2">{(ship.dps * ship.qty).toLocaleString()}</td>
-              <td className="w-20 p-2">{(ship.alpha * ship.qty).toLocaleString()}</td>
+              <td className="w-24 p-2">{(ship.ehp).toLocaleString()}</td>
+              <td className="w-20 p-2">{(ship.dps).toLocaleString()}</td>
+              <td className="w-20 p-2">{(ship.alpha).toLocaleString()}</td>
               <td className="w-20 p-2">{ship.sig}</td>
               <td className="w-20 p-2">{ship.orbit_velocity}</td>
               <td className="w-20 p-2">{ship.distance}</td>

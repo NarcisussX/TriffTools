@@ -15,6 +15,12 @@ export default function Changelog() {
             <li>
               <span className="text-white font-semibold">Updated domain name to triff.tools - old (triffnix.com) will redirect.</span>
             </li>
+            <li>
+              <span className="text-white font-semibold">Added peak Alpha stat to wormhole PvE sites</span> - Suggested by Styx
+            </li>
+            <li>
+              <span className="text-white font-semibold">Addjusted PvE site waves to show dps/ehp/alpha per ship</span> - Suggested by Styx
+            </li>
           </ul>
           <p>
             7/31/2025

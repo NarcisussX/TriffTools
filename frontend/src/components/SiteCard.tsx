@@ -41,6 +41,7 @@ interface Site {
 function getPeakStats(waves: Wave[]) {
   let peakDPS = 0;
   let peakNeuts = 0;
+  let peakAlpha = 0;
 
   for (const wave of waves) {
     // Skip Drifter-injected waves
@@ -51,6 +52,8 @@ function getPeakStats(waves: Wave[]) {
     ) {
       continue;
     }
+    const alpha = wave.ships.reduce((sum, s) => sum + s.alpha * s.qty, 0);
+    peakAlpha = Math.max(peakAlpha, alpha);
 
     const dps = wave.ships.reduce((sum, s) => sum + s.dps * s.qty, 0);
     peakDPS = Math.max(peakDPS, dps);
@@ -63,7 +66,7 @@ function getPeakStats(waves: Wave[]) {
     peakNeuts = Math.max(peakNeuts, totalNeuts);
   }
 
-  return { peakDPS, peakNeuts };
+  return { peakDPS, peakNeuts, peakAlpha };
 }
 
 
@@ -88,7 +91,7 @@ export default function SiteCard({ site }: { site: Site }) {
       </div>
 
 {site.blue_loot_isk !== undefined && (() => {
-  const { peakDPS, peakNeuts } = getPeakStats(site.waves);
+  const { peakDPS, peakNeuts, peakAlpha } = getPeakStats(site.waves);
   return (
     <div className="text-sm mb-2 flex flex-wrap items-center justify-between gap-4 text-green-400">
       <div>
@@ -97,6 +100,9 @@ export default function SiteCard({ site }: { site: Site }) {
       <div className="flex gap-4 items-center text-white">
         <div className="px-2 py-1 rounded border border-red-500 bg-red-500/10 text-red-300">
           Peak DPS: <span className="font-semibold">{peakDPS.toLocaleString()}</span>
+        </div>
+        <div className="px-2 py-1 rounded border border-red-500 bg-orange-500/10 text-orange-300">
+          Peak Alpha: <span className="font-semibold">{peakAlpha.toLocaleString()}</span>
         </div>
          <div className="px-2 py-1 rounded border border-blue-500 bg-blue-500/10 text-blue-300 flex items-center gap-1">Peak Neut:
           <img src="/icons/specials/neut.png" alt="neut" className="w-4 h-4" />
