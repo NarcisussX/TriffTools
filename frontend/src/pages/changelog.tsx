@@ -8,6 +8,24 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            8/03/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Bug: O477 WH's were listed as C2</span> - Found by Axium
+            </li>
+            <li>
+              <span className="text-white font-semibold">Bug: Trigger-only toggle caused Peak DPS/Alpha/Neut to recalculate</span> - Found by Axium
+            </li>
+            <li>
+              <span className="text-white font-semibold">Allowed sorting on Ore/Gas/Reactions calculator return tables</span> - Suggested by Axium
+            </li>
+            <li>
+              <span className="text-white font-semibold">Added "No tackle" badge to sites with no tackle in PvE reference page</span> - Suggested by Axium
+            </li>
+          </ul>
+          <p>
             8/01/2025
           </p>
 

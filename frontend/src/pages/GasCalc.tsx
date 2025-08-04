@@ -112,6 +112,9 @@ const [form, setForm] = useState({
 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sortKey, setSortKey] = useState<keyof ResultRow>("iskPerHour");
+  const [sortAsc, setSortAsc] = useState(false);
+
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -180,16 +183,70 @@ const isFrigate = ["Unbonused Ship", "Venture", "Prospect"].includes(form.ship);
 const isBarge = ["Covetor", "Retriever", "Procurer", "Hulk", "Skiff", "Mackinaw"].includes(form.ship);
 const modules = Object.keys(isFrigate ? scoops : isBarge ? harvesters : {});
 
+function handleSort(key: string) {
+  if (key === sortKey) {
+    setSortAsc(!sortAsc); // toggle direction
+  } else {
+    setSortKey(key);
+    setSortAsc(true); // new column, default to ascending
+  }
+}
+
+const getSortedGroupedResults = () => {
+  const grouped: ResultRow[][] = [];
+
+  for (let i = 0; i < results.length; i += 2) {
+    grouped.push([results[i], results[i + 1]]);
+  }
+
+grouped.sort((a, b) => {
+  let valA = a[0][sortKey];
+  let valB = b[0][sortKey];
+
+  // Special handling for TTK
+  if (sortKey === "ttk") {
+    const parseTTK = (ttk: string) => {
+      if (!ttk) return Infinity;
+      const match = /(?:(\d+)h)?\s*(\d+)m/.exec(ttk);
+      if (!match) return Infinity;
+      const hours = parseInt(match[1] || "0", 10);
+      const minutes = parseInt(match[2], 10);
+      return hours * 60 + minutes;
+    };
+    valA = parseTTK(a[0].ttk ?? a[0].minutesToHuff);
+    valB = parseTTK(b[0].ttk ?? b[0].minutesToHuff);
+  }
+
+  if (typeof valA === "number" && typeof valB === "number") {
+    return sortAsc ? valA - valB : valB - valA;
+  }
+
+  if (typeof valA === "string" && typeof valB === "string") {
+    return sortAsc
+      ? valA.localeCompare(valB, undefined, { numeric: true })
+      : valB.localeCompare(valA, undefined, { numeric: true });
+  }
+
+  return 0;
+});
+
+
+  return grouped;
+};
+
 
   return (
     <div className="font-mono">
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
           <p className="mb-1">
-            ⚙️ <span className="font-semibold text-white">Customize your setup</span> using the dropdowns below to match your ship, modules, skills, and implants.
+            <span className="font-semibold text-white">Customize your setup</span> using the dropdowns below to match your ship, modules, skills, and implants.
+          </p>
+          <p className="mb-1">
+            You can <span className="font-semibold text-white">sort the return</span> from the calculator by any of the columns, defaults to ISK/hr descending.
           </p>
           <p>
-            📈 <span className="font-semibold text-white">Market pricing</span> updates every hour courtesy of{" "}
+            <span className="font-semibold text-white">Market pricing</span> updates every hour courtesy of{" "}
             <a
               href="https://market.fuzzwork.co.uk/"
               target="_blank"
@@ -476,39 +533,78 @@ const modules = Object.keys(isFrigate ? scoops : isBarge ? harvesters : {});
   <tr>
     <th className="border px-3 py-2">Site</th>
     <th className="border px-3 py-2">Gas</th>
-    <th className="border px-3 py-2">M³/Cloud</th>
-<InfoHead id="m3lost" tip="Expected m³ destroyed by residue (waste) instead of harvested. Based on module residue % × multiplier.">
-  M³ Lost
-</InfoHead>
-    <th className="border px-3 py-2">ISK/Cloud</th>
-<InfoHead id="isklost" tip="ISK value of expected residue (waste) destroyed instead of harvested.">
-  ISK Lost
-</InfoHead>
-    <th className="border px-3 py-2">TTK</th>
-    <th className="border px-3 py-2">ISK/hr</th>
+
+    <th
+      className="border px-3 py-2 cursor-pointer hover:text-cyan-300"
+      onClick={() => handleSort("m3PerCloud")}
+    >
+      M³/Cloud {sortKey === "m3PerCloud" && (sortAsc ? "▲" : "▼")}
+    </th>
+
+    <InfoHead
+      id="m3lost"
+      tip="Expected m³ destroyed by residue (waste) instead of harvested. Based on module residue % × multiplier."
+    >
+      <span
+        className="cursor-pointer hover:text-cyan-300"
+        onClick={() => handleSort("m3LostResidue")}
+      >
+        M³ Lost {sortKey === "m3LostResidue" && (sortAsc ? "▲" : "▼")}
+      </span>
+    </InfoHead>
+
+    <th
+      className="border px-3 py-2 cursor-pointer hover:text-cyan-300"
+      onClick={() => handleSort("iskPerCloud")}
+    >
+      ISK/Cloud {sortKey === "iskPerCloud" && (sortAsc ? "▲" : "▼")}
+    </th>
+
+    <InfoHead
+      id="isklost"
+      tip="ISK value of expected residue (waste) destroyed instead of harvested."
+    >
+      <span
+        className="cursor-pointer hover:text-cyan-300"
+        onClick={() => handleSort("iskLostResidue")}
+      >
+        ISK Lost {sortKey === "iskLostResidue" && (sortAsc ? "▲" : "▼")}
+      </span>
+    </InfoHead>
+
+    <th
+      className="border px-3 py-2 cursor-pointer hover:text-cyan-300"
+      onClick={() => handleSort("ttk")}
+    >
+      TTK {sortKey === "ttk" && (sortAsc ? "▲" : "▼")}
+    </th>
+
+    <th
+      className="border px-3 py-2 cursor-pointer hover:text-cyan-300"
+      onClick={() => handleSort("iskPerHour")}
+    >
+      ISK/hr {sortKey === "iskPerHour" && (sortAsc ? "▲" : "▼")}
+    </th>
   </tr>
 </thead>
+
 <tbody>
   {(() => {
     const rows = [];
-    for (let i = 0; i < results.length; i += 2) {
-      const r1: any = results[i];
-      const r2: any = results[i + 1];
+    let rowIndex = 0;
 
-      // safe fallbacks
+    for (const [r1, r2] of getSortedGroupedResults()) {
       const ttk1 = r1.ttk ?? r1.minutesToHuff;
       const ttk2 = r2.ttk ?? r2.minutesToHuff;
 
-      // residue-adjusted ISK totals for the site
       const siteIskAdj =
         (r1.iskPerCloud ?? 0) +
         (r2?.iskPerCloud ?? 0);
 
+      const bgColor = rowIndex % 2 === 0 ? "bg-gray-800" : "bg-gray-700";
+
       rows.push(
-        <tr
-          key={i}
-          className={Math.floor(i / 2) % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
-        >
+        <tr key={`${r1.site}-1`} className={bgColor}>
           <td
             className="border px-3 py-2 text-center align-middle"
             rowSpan={2}
@@ -542,10 +638,7 @@ const modules = Object.keys(isFrigate ? scoops : isBarge ? harvesters : {});
             })}
           </td>
         </tr>,
-        <tr
-          key={i + 1}
-          className={Math.floor(i / 2) % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
-        >
+        <tr key={`${r1.site}-2`} className={bgColor}>
           {/* row 2 gas */}
           <td className="border px-3 py-2">{r2.gas}</td>
           <td className="border px-3 py-2">{Math.round(r2.m3PerCloud ?? r2.m3_per_cloud).toLocaleString()}</td>
@@ -570,7 +663,10 @@ const modules = Object.keys(isFrigate ? scoops : isBarge ? harvesters : {});
           </td>
         </tr>
       );
+
+      rowIndex++;
     }
+
     return rows;
   })()}
 </tbody>

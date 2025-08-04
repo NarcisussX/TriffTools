@@ -70,7 +70,17 @@ function getPeakStats(waves: Wave[]) {
 }
 
 
-export default function SiteCard({ site }: { site: Site }) {
+export default function SiteCard({
+  site,
+  referenceMode,
+  hasNoTackle,
+}: {
+  site: Site;
+  referenceMode?: boolean;
+  hasNoTackle?: boolean;
+}) {
+
+
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -90,13 +100,20 @@ export default function SiteCard({ site }: { site: Site }) {
         </button>
       </div>
 
-{site.blue_loot_isk !== undefined && (() => {
+{site.blue_loot_isk !== undefined && !referenceMode && (() => {
   const { peakDPS, peakNeuts, peakAlpha } = getPeakStats(site.waves);
   return (
     <div className="text-sm mb-2 flex flex-wrap items-center justify-between gap-4 text-green-400">
-      <div>
-        Blue Loot: <span className="font-semibold">{site.blue_loot_isk.toLocaleString()} ISK</span>
-      </div>
+<div className="flex items-center gap-2">
+  <div>
+    Blue Loot: <span className="font-semibold">{site.blue_loot_isk.toLocaleString()} ISK</span>
+  </div>
+  {hasNoTackle && (
+    <div className="text-xs text-green-400 bg-green-900/30 border border-green-700 px-1.5 py-0.5 rounded font-mono">
+      No tackle!
+    </div>
+  )}
+</div>
       <div className="flex gap-4 items-center text-white">
         <div className="px-2 py-1 rounded border border-red-500 bg-red-500/10 text-red-300">
           Peak DPS: <span className="font-semibold">{peakDPS.toLocaleString()}</span>

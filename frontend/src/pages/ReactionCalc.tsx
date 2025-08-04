@@ -6,6 +6,8 @@ const hybridBlueprintIDs = [
 ];
 
 const ReactionCalc: React.FC = () => {
+  const [sortKey, setSortKey] = useState("profitPercent");
+  const [sortAsc, setSortAsc] = useState(false);
   const [station, setStation] = useState("Jita 4-4");
   const [pricingModeInput, setPricingModeInput] = useState("sell");
   const [pricingModeOutput, setPricingModeOutput] = useState("buy");
@@ -51,12 +53,22 @@ const ReactionCalc: React.FC = () => {
     };
     fetchAll();
   }, [station, pricingModeInput, pricingModeOutput, reactionSkill, structureType, rig1, rig2, systemCostIndex, facilityTaxPercent, securityStatus]);
+const sortedResults = [...results].sort((a, b) => {
+  const valA = sortKey === "profitPercent"
+    ? (a.inputCost > 0 ? a.profit / a.inputCost : 0)
+    : a[sortKey];
+  const valB = sortKey === "profitPercent"
+    ? (b.inputCost > 0 ? b.profit / b.inputCost : 0)
+    : b[sortKey];
+
+  return sortAsc ? valA - valB : valB - valA;
+});
 
   return (
     <div className="max-w-6xl mx-auto p-4 text-white">
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
           <p className="mb-1">
-            Someday I'll add support for Biochemical and Composite reactions, which should be easy, as well as for time calculations (which shouldn't be easy tbh). I also need to add support for market taxes and broker fees, but I wanna go play Minecraft so I'm done with this for now.
+            You can sort by any column in the table. Someday I'll add support for time calculations. I also need to add support for market taxes and broker fees, but I wanna go play Minecraft so I'm done with this for now.
           </p>
         </div>
       <h1 className="text-3xl font-bold mb-4">Hybrid Reaction Calculator</h1>
@@ -136,18 +148,37 @@ const ReactionCalc: React.FC = () => {
       </div>
 
 <table className="w-full text-sm text-left border border-gray-700">
-  <thead>
-    <tr className="bg-gray-800">
-      <th className="px-4 py-2 border">Product</th>
-      <th className="px-4 py-2 border">Input Cost</th>
-      <th className="px-4 py-2 border">Taxes</th>
-      <th className="px-4 py-2 border">Output Value</th>
-      <th className="px-4 py-2 border">Profit</th>
-      <th className="px-4 py-2 border">% Profit</th>
-    </tr>
-  </thead>
+<thead>
+  <tr className="bg-gray-800">
+    {[
+      { key: "outputs[0].name", label: "Product" },
+      { key: "inputCost", label: "Input Cost" },
+      { key: "totalTaxes", label: "Taxes" },
+      { key: "outputValue", label: "Output Value" },
+      { key: "profit", label: "Profit" },
+      { key: "profitPercent", label: "% Profit" },
+    ].map(col => (
+      <th
+        key={col.key}
+        className="px-4 py-2 border cursor-pointer hover:bg-gray-700"
+        onClick={() => {
+          if (sortKey === col.key) {
+            setSortAsc(!sortAsc);
+          } else {
+            setSortKey(col.key);
+            setSortAsc(false);
+          }
+        }}
+      >
+        {col.label} {sortKey === col.key ? (sortAsc ? "▲" : "▼") : ""}
+      </th>
+    ))}
+  </tr>
+</thead>
+
   <tbody>
-    {results.map(r => {
+    
+    {sortedResults.map(r => {
       const profitColor = r.profit >= 0 ? "bg-green-900 text-green-200" : "bg-red-900 text-red-200";
       const profitPercent = r.inputCost > 0 ? (r.profit / r.inputCost) * 100 : 0;
 

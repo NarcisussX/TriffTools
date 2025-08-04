@@ -153,7 +153,7 @@ return (
     {/* Tooltip */}
     <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 rounded bg-gray-800 text-white text-xs px-3 py-2 shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition">
       <b>Reference mode: </b>  
-      Only shows wave and DTR triggers from each wave along with the Upgraded Avengers and Drifter waves. Hides all other NPCs for quick referencing during fleet PvE. THIS DOES MESS WITH SITE/WAVE TOTAL DPS/NEUT ETC, DO NOT USE FOR THEORYCRAFTING.
+      Only shows wave and DTR triggers from each wave along with the Upgraded Avengers and Drifter waves. Hides all other NPCs and stats for quick referencing during actual site running.
     </div>
   </div>
 </div>
@@ -286,7 +286,9 @@ return (
   }
 
 let allWaves = [...preWave, ...site.waves, ...extraWaves];
-
+const hasNoTackle = !allWaves.some((wave) =>
+  wave.ships.some((ship) => ship.special?.Scram && ship.special.Scram > 0)
+);
 if (referenceMode) {
   allWaves = allWaves.filter(
     (wave) =>
@@ -323,7 +325,7 @@ const adjustedSite = {
 };
 
 
-  return <SiteCard key={`${site.site}-${i}`} site={adjustedSite} />;
+  return <SiteCard key={`${site.site}-${i}`} site={adjustedSite} referenceMode={referenceMode} hasNoTackle={hasNoTackle} />;
 })}
     </div>
   </div>

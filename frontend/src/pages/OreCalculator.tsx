@@ -64,6 +64,8 @@ function InfoHead({ children, tip, id, className = "" }: { children: React.React
 
 export default function OreCalculator() {
   // All config state, output, etc
+  const [sortKey, setSortKey] = useState("iskPerHour"); // Default to ISK/hr
+  const [sortAsc, setSortAsc] = useState(false); // Descending by default
   const [ores, setOres] = useState<Record<string, any>>({});
   const [modules, setModules] = useState<Record<string, any>>({});
   const [ships, setShips] = useState<string[]>([]);
@@ -163,6 +165,13 @@ const updateConfig = (key: string, value: any) => {
     const res = await axios.post("/api/ore-calc", { config, boost, implantName: implant });
     setOutput(res.data);
   };
+const handleSort = (key: string) => {
+  if (sortKey === key) setSortAsc(a => !a); // Flip sort
+  else {
+    setSortKey(key);
+    setSortAsc(key === "ore" ? true : false); // Ores = A-Z, values = desc by default
+  }
+};
 
   // ========== UI Rendering ==============
   return (
@@ -170,6 +179,9 @@ const updateConfig = (key: string, value: any) => {
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         {/* Info box */}
         <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border border-gray-700 rounded shadow-md text-sm text-gray-300">
+          <p className="mb-1">
+            You can <span className="font-semibold text-white">sort by any header</span> by clicking the name.
+          </p>
           <p className="mb-1">
             <span className="font-semibold text-white">Customize your fleet</span> and skills below to see live ISK and yield for every ore. No, I will not update this to include Mercoxit, ice or moon ores. Yes, someday I will add support for mining drones. Not soon. 
           </p>
@@ -499,14 +511,58 @@ const updateConfig = (key: string, value: any) => {
               <table className="w-full min-w-[420px] text-sm">
                 <thead>
                   <tr className="bg-gray-900/95">
-                    <InfoHead id="ore1" tip="Type of ore">Ore</InfoHead>
-                    <InfoHead id="isk1" tip="Highest buy price in Jita, per unit">ISK/unit</InfoHead>
-                    <InfoHead id="units1" tip="Total raw ore units produced per hour">Units/hr</InfoHead>
-                    <InfoHead id="iskhr1" tip="Estimated ISK per hour (highest buyer)">ISK/hr</InfoHead>
+<InfoHead id="ore1" tip="Type of ore">
+  <span
+    className="cursor-pointer select-none"
+    onClick={() => handleSort("ore")}
+  >
+    Ore {sortKey === "ore" && (sortAsc ? "▲" : "▼")}
+  </span>
+</InfoHead>
+<InfoHead id="isk1" tip="Highest buy price in Jita, per unit">
+  <span
+    className="cursor-pointer select-none"
+    onClick={() => handleSort("iskPerUnit")}
+  >
+    ISK/unit {sortKey === "iskPerUnit" && (sortAsc ? "▲" : "▼")}
+  </span>
+</InfoHead>
+<InfoHead id="units1" tip="Total raw ore units produced per hour">
+  <span
+    className="cursor-pointer select-none"
+    onClick={() => handleSort("unitsPerHour")}
+  >
+    Units/hr {sortKey === "unitsPerHour" && (sortAsc ? "▲" : "▼")}
+  </span>
+</InfoHead>
+<InfoHead id="iskhr1" tip="Estimated ISK per hour (highest buyer)">
+  <span
+    className="cursor-pointer select-none"
+    onClick={() => handleSort("iskPerHour")}
+  >
+    ISK/hr {sortKey === "iskPerHour" && (sortAsc ? "▲" : "▼")}
+  </span>
+</InfoHead>
+
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.entries(output.result || {}).map(([ore, data]: any, idx) => (
+                  {Object.entries(output.result || {})
+  .sort((a: any, b: any) => {
+    let valA, valB;
+    if (sortKey === "ore") {
+      valA = a[0];
+      valB = b[0];
+    } else {
+      valA = a[1][sortKey] ?? 0;
+      valB = b[1][sortKey] ?? 0;
+    }
+    if (typeof valA === "string") {
+      return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    }
+    return sortAsc ? valA - valB : valB - valA;
+  })
+  .map(([ore, data]: any, idx) => (
                     <tr key={ore} className={idx % 2 === 0 ? "bg-gray-900/80" : "bg-gray-800/70"}>
                       <td className="p-2 border">{ore}</td>
                       <td className="p-2 border">{(data.iskPerUnit ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
