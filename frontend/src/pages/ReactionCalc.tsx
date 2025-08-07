@@ -17,7 +17,7 @@ const ReactionCalc: React.FC = () => {
   const [rig2, setRig2] = useState("None");
   const [systemCostIndex, setSystemCostIndex] = useState(0);
   const [facilityTaxPercent, setFacilityTaxPercent] = useState(0);
-  const [securityStatus, setSecurityStatus] = useState("low");
+  const [securityStatus, setSecurityStatus] = useState("wh");
   const [results, setResults] = useState<any[]>([]);
   const [selectedResult, setSelectedResult] = useState<any | null>(null);
 
