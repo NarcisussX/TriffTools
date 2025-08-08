@@ -17,10 +17,12 @@ import OreCalculator from "./pages/OreCalculator";
 import TimestampTool from "./pages/Timestamp";
 import WormholeDatabase from "./pages/WormholeDatabase";
 import ReactionCalc from "./pages/ReactionCalc";
+import ParticipationCalc from "./pages/ParticipationCalc";
 
 const navItems = [
   { to: "/gas-calc", label: "Gas Calculator" },
   { to: "/ore", label: "Ore Calculator" },
+  { to: "/participation", label: "Participation Calculator" },
   { to: "/bloot", label: "Ratting Split Calc" },
   { to: "/pi-calc", label: "PI Profitability" },
   { to: "/rolling-mass", label: "Rolling Mass" },
@@ -155,6 +157,7 @@ export default function App() {
           <Route path="/timestamp" element={<TimestampTool />} />
           <Route path="/wormholes" element={<WormholeDatabase />} />
           <Route path="/reaction-calc" element={<ReactionCalc />} />
+          <Route path="/participation" element={<ParticipationCalc />} />
         </Routes>
       </main>
     </div>

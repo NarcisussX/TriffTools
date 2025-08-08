@@ -8,6 +8,16 @@ export default function Changelog() {
 
         <div className="space-y-6 text-base text-gray-300">
           <p>
+            8/07/2025
+          </p>
+
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <span className="text-white font-semibold">Added participation-based blue loot calculator - /participation</span> - Suggested by Axium
+            </li>
+          </ul>
+          <p></p>
+          <p>
             8/03/2025
           </p>
 

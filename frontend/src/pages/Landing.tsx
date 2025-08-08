@@ -14,16 +14,22 @@ const TOOLS = [
     icon: "⛏️"
   },
   {
+    name: "Share-based Loot Splitter",
+    link: "/bloot",
+    desc: "Fast, fair wormhole ratting ISK split by share or role.",
+    icon: "💎"
+  },
+  {
+    name: "Participation Loot Splitter",
+    link: "/participation",
+    desc: "Lightweight wormhole ratting isk split by heartbeats",
+    icon: "👥"
+  },
+  {
     name: "PI Profitability Calculator",
     link: "/pi-calc",
     desc: "Batch profit calculator for all Planetary Interaction chains.",
     icon: "🪐"
-  },
-  {
-    name: "Blue Loot Splitter",
-    link: "/bloot",
-    desc: "Fast, fair wormhole ratting ISK split by share or role.",
-    icon: "💎"
   },
     {
     name: "Hole Rolling Guide",
@@ -61,12 +67,12 @@ const TOOLS = [
     desc: "The people who made this project possible.",
     icon: "💬"
   },
-  {
-    name: "Roadmap",
-    link: "/roadmap",
-    desc: "What's next for Triff.Tools",
-    icon: "📍"
-  },
+//  {
+//    name: "Roadmap",
+//    link: "/roadmap",
+//    desc: "What's next for Triff.Tools",
+//    icon: "📍"
+//  },
   {
     name: "Changelog",
     link: "/changelog",

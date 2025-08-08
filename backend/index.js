@@ -35,6 +35,8 @@ const killboardRoutes = require("./routes/killboard");
 app.use("/api", killboardRoutes);
 const reactionCalc = require("./routes/reactionCalc");
 app.use("/api", reactionCalc);
+const participationCalc = require("./routes/participationCalc");
+app.use("/api", participationCalc);
 
 
 
